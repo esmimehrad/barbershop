@@ -1,0 +1,68 @@
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: var(--bds-paper);
+  color: var(--bds-ink);
+  font-family: var(--bds-font-body);
+  -webkit-font-smoothing: antialiased;
+}
+
+.demo-wrap {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 48px 24px 96px;
+  display: flex;
+  flex-direction: column;
+  gap: 48px;
+}
+
+.demo-header h1 {
+  font-family: var(--bds-font-display);
+  font-weight: 400;
+  font-size: 36px;
+  margin: 0 0 8px;
+}
+
+.demo-header p {
+  color: var(--bds-ink-soft);
+  margin: 0;
+}
+
+.demo-section {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.demo-section h2 {
+  font-family: var(--bds-font-body);
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--bds-ink-soft);
+  border-bottom: 1px solid var(--bds-line);
+  padding-bottom: 8px;
+  margin: 0;
+}
+
+.demo-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+}
+
+.demo-card {
+  background: var(--bds-paper-raised);
+  border: 1px solid var(--bds-line);
+  border-radius: var(--bds-radius-md);
+  padding: 24px;
+}

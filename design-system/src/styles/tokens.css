@@ -1,0 +1,139 @@
+/*
+  Barbershop Booking Platform — design tokens.
+  Light theme is the default (:root). Dark theme responds to the OS via
+  prefers-color-scheme AND can be forced with [data-theme="dark"|"light"]
+  on the document root — the explicit attribute always wins.
+*/
+
+:root {
+  --bds-ink: #1c1712;
+  --bds-ink-soft: #4a4038;
+  --bds-paper: #ddaa55;
+  --bds-paper-raised: #f0d8a0;
+  --bds-paper-deep: #c08f3e;
+  --bds-line: rgba(28, 23, 18, 0.15);
+  --bds-line-strong: rgba(28, 23, 18, 0.28);
+
+  --bds-red: #a53a2c;
+  --bds-red-deep: #7d2a20;
+  --bds-red-ink: #ffffff;
+  --bds-navy: #1f3a5c;
+  --bds-navy-deep: #16293f;
+  --bds-brass: #9c762e;
+  --bds-brass-deep: #7a5b22;
+  --bds-green: #3f7a4a;
+  --bds-green-deep: #2f5f39;
+  --bds-green-ink: #ffffff;
+
+  --bds-success: #3f7a4a;
+  --bds-warning: #9c762e;
+  --bds-critical: #a3321f;
+  --bds-info: #2f5c8a;
+
+  --bds-shadow-sm: 0 1px 2px rgba(28, 23, 18, 0.1);
+  --bds-shadow-md: 0 6px 20px rgba(28, 23, 18, 0.14);
+
+  --bds-radius-sm: 4px;
+  --bds-radius-md: 9px;
+  --bds-radius-pill: 999px;
+
+  --bds-space-1: 4px;
+  --bds-space-2: 8px;
+  --bds-space-3: 12px;
+  --bds-space-4: 16px;
+  --bds-space-5: 24px;
+  --bds-space-6: 32px;
+  --bds-space-7: 48px;
+  --bds-space-8: 64px;
+  --bds-space-9: 96px;
+
+  --bds-ease: cubic-bezier(0.4, 0, 0.2, 1);
+  --bds-dur-fast: 120ms;
+  --bds-dur-base: 200ms;
+
+  --bds-font-display: 'Bevan', Georgia, serif;
+  --bds-font-body: 'Archivo', -apple-system, 'Segoe UI', sans-serif;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bds-ink: #ece3d1;
+    --bds-ink-soft: #b9ac96;
+    --bds-paper: #17130f;
+    --bds-paper-raised: #211b14;
+    --bds-paper-deep: #0f0c09;
+    --bds-line: rgba(236, 227, 209, 0.14);
+    --bds-line-strong: rgba(236, 227, 209, 0.26);
+
+    --bds-red: #d97a67;
+    --bds-red-deep: #e69989;
+    --bds-red-ink: #17130f;
+    --bds-navy: #7fa0c8;
+    --bds-navy-deep: #9cb9db;
+    --bds-brass: #d3ab5f;
+    --bds-brass-deep: #e3c084;
+    --bds-green: #74b982;
+    --bds-green-deep: #8fcf9c;
+    --bds-green-ink: #17130f;
+
+    --bds-success: #74b982;
+    --bds-warning: #d3ab5f;
+    --bds-critical: #e07a5f;
+    --bds-info: #82aedd;
+
+    --bds-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+    --bds-shadow-md: 0 10px 28px rgba(0, 0, 0, 0.45);
+  }
+}
+
+:root[data-theme='dark'] {
+  --bds-ink: #ece3d1;
+  --bds-ink-soft: #b9ac96;
+  --bds-paper: #17130f;
+  --bds-paper-raised: #211b14;
+  --bds-paper-deep: #0f0c09;
+  --bds-line: rgba(236, 227, 209, 0.14);
+  --bds-line-strong: rgba(236, 227, 209, 0.26);
+  --bds-red: #d97a67;
+  --bds-red-deep: #e69989;
+  --bds-red-ink: #17130f;
+  --bds-navy: #7fa0c8;
+  --bds-navy-deep: #9cb9db;
+  --bds-brass: #d3ab5f;
+  --bds-brass-deep: #e3c084;
+  --bds-green: #74b982;
+  --bds-green-deep: #8fcf9c;
+  --bds-green-ink: #17130f;
+  --bds-success: #74b982;
+  --bds-warning: #d3ab5f;
+  --bds-critical: #e07a5f;
+  --bds-info: #82aedd;
+  --bds-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --bds-shadow-md: 0 10px 28px rgba(0, 0, 0, 0.45);
+}
+
+:root[data-theme='light'] {
+  --bds-ink: #1c1712;
+  --bds-ink-soft: #4a4038;
+  --bds-paper: #ddaa55;
+  --bds-paper-raised: #f0d8a0;
+  --bds-paper-deep: #c08f3e;
+  --bds-line: rgba(28, 23, 18, 0.15);
+  --bds-line-strong: rgba(28, 23, 18, 0.28);
+  --bds-red: #a53a2c;
+  --bds-red-deep: #7d2a20;
+  --bds-red-ink: #ffffff;
+  --bds-navy: #1f3a5c;
+  --bds-navy-deep: #16293f;
+  --bds-brass: #9c762e;
+  --bds-brass-deep: #7a5b22;
+  --bds-green: #3f7a4a;
+  --bds-green-deep: #2f5f39;
+  --bds-green-ink: #ffffff;
+  --bds-success: #3f7a4a;
+  --bds-warning: #9c762e;
+  --bds-critical: #a3321f;
+  --bds-info: #2f5c8a;
+  --bds-shadow-sm: 0 1px 2px rgba(28, 23, 18, 0.1);
+  --bds-shadow-md: 0 6px 20px rgba(28, 23, 18, 0.14);
+}
