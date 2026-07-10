@@ -1,8 +1,15 @@
 # Landing Page Spec — Barbershop Booking Platform (MVP)
 
 **Companion to:** PRD v0.8 · Data Model v0.0.2 · User Flows v0.0.2 · Feature Specs v0.0.1
-**Status:** Draft v0.0.1 · **Last updated:** July 9, 2026
+**Status:** Draft v0.0.2 · **Last updated:** July 10, 2026
 **Scope:** Public marketing landing page. Booking flow itself is out of scope here — the landing page is an entry point into it (FS-1).
+
+**Changes from v0.0.1:**
+- Added persistent mobile "Book Now" bar (§1)
+- Added §9 Local SEO & Metadata (new)
+- Added §12 Referral strip (conditional, new)
+- Added §13 FAQ / Policies (new)
+- Renumbered §9–10 → §10–11 (Open questions, Cross-references); old §9–13 (Gallery through Footer) shifted to §9–15 accordingly — see §2 table
 
 ---
 
@@ -37,8 +44,12 @@ This mirrors the two-track availability engine (PRD §7). The page never mixes t
 | 9 | Gallery | **Sticky WORK / SPACE headers**, vertical scroll |
 | 10 | Shop environment | **Horizontal pinned scroll** |
 | 11 | Testimonials | Google reviews, simple fade |
-| 12 | Contact | Map, phone, address |
-| 13 | Footer | — |
+| 12 | Referral strip *(conditional, new)* | Reveal only |
+| 13 | FAQ / Policies *(new)* | Accordion expand/collapse |
+| 14 | Contact | Map, phone, address |
+| 15 | Footer | — |
+
+**Not a scroll section — persists across the page on mobile:** a sticky bottom "Book Now" bar mounts once the hero scrolls out of view and stays through §4–§13. See §1.
 
 **Rule: one pinned moment per page.** Section 6 is it. Sections 9 and 10 use sticky/horizontal techniques, not a scrubbed sequence. Two pinned sequences make the page read as a demo reel.
 
@@ -60,6 +71,12 @@ This mirrors the two-track availability engine (PRD §7). The page never mixes t
 - `position: sticky; top: 0`, opaque background (transparent sticky headers show scrolling content through them).
 - Anchor targets must set `scroll-margin-top` equal to nav height, or links land under the bar.
 - Section-level sticky headers (§7, §9) pin **below** the nav (`top: <nav-height>`), never at `top: 0`.
+
+**Mobile: persistent booking bar** *(new)*
+- Once the hero (§2) scrolls out of view, a thin sticky bar (~56px) mounts at the bottom of the viewport with a single **Book Now** button, opening the same sheet as the hero CTA.
+- Hidden while the hero is in view (avoids two competing CTAs on screen at once) and hidden while the booking sheet itself is open.
+- Persists through §4–§13 so a visitor deep in Gallery or Testimonials never has to scroll back up to book.
+- Desktop doesn't need this — the sticky nav's Book Now link already stays visible at all times.
 
 ### 2 — Hero
 
@@ -168,12 +185,29 @@ This section directly supports per-barber service assignment (FS-11.3, FS-11.6):
 - Do not build a carousel expecting 20 reviews. There are 5.
 - Motion: simple fade. Let the content carry it.
 
-### 12 — Contact
+### 12 — Referral strip *(conditional, new)*
+
+- Renders **only** when a referral program is configured — mirrors §3's conditional pattern exactly: no active program, no rendered section, no reserved space.
+- Single thin strip: one line of copy + one CTA (e.g. "Know someone who needs a cut? Refer a friend — you both save."). No imagery.
+- Sits directly after Testimonials, leaning on the social-proof momentum without competing with it.
+- Motion: simple fade, same treatment as §11. No new motion primitive introduced.
+- `[OPEN]` No referral feature spec exists yet. This section is a reserved slot; wiring the CTA is blocked on that program being defined elsewhere.
+
+### 13 — FAQ / Policies *(new)*
+
+- Accordion list: cancellation/no-show policy, walk-ins vs. appointments, parking, payment methods accepted. 4–6 items typical.
+- Expanding one item collapses the others — keeps the section short regardless of how many questions get added later.
+- Motion: Layer 1 reveal on scroll-in; expand/collapse is a simple height transition, not scroll-driven.
+- Accessibility: each trigger needs `aria-expanded`, collapsed panels need `aria-hidden`, and the whole thing must be keyboard-operable.
+- Sits directly before Contact — catches remaining objections right before a visitor would otherwise pick up the phone.
+- **Content dependency:** final policy copy needed from the shop (see §7 asset checklist).
+
+### 14 — Contact
 
 - Map, phone, address, hours.
 - No motion.
 
-### 13 — Footer
+### 15 — Footer
 
 - Standard. No motion.
 
@@ -191,6 +225,7 @@ IntersectionObserver + CSS transforms. Zero weight, GPU-composited, degrade grac
 | SVG line-draw underline / divider | Between §2–3, §6–7, §8–9 |
 | Text mask-wipe (line-by-line, behind a moving mask) | §2 headline, §6 |
 | Image parallax (0.85× scroll speed) | §6 background |
+| Accordion expand/collapse (height transition) | §13 FAQ |
 
 ### Layer 2 — Sticky / pinned transforms
 | Effect | Where |
@@ -200,6 +235,7 @@ IntersectionObserver + CSS transforms. Zero weight, GPU-composited, degrade grac
 | Horizontal pinned scroll | §10 environment |
 | Threshold color shift | §8 eyelash |
 | Type-scale moment | §5 |
+| Persistent sticky mobile "Book Now" bar (mount/unmount on hero visibility) | §1 Nav, mobile only |
 
 ### Layer 3 — Pinned sequence
 | Effect | Where |
@@ -248,6 +284,17 @@ These are new to the landing page and belong in a **Data Model v0.0.3** bump.
 
 **Constraint:** the Gallery section requires ≥ 6 rows per `group` to render sticky headers. Below that, fall back to a static label.
 
+### FAQItem — new entity (for §13) *(new)*
+| Field | Type | Notes |
+|---|---|---|
+| id | UUID (PK) | |
+| question | string | |
+| answer | text | |
+| display_order | integer | |
+
+### Referral program — pending *(new)*
+The referral strip (§12) needs a feature flag equivalent to `Promotion.is_featured_on_landing` (e.g. a `ReferralProgram.is_active` boolean) once a referral feature spec exists. Fields intentionally not defined here — placeholder pending that spec. See Open Questions §10.
+
 ---
 
 ## 6. Admin surface additions
@@ -258,6 +305,8 @@ Extends FS-11 (Admin Configuration). Gated at `manager` or above unless noted.
 2. **Feature a promotion on the landing page** — single-select; selecting demotes the current.
 3. **Manage barber profile** — portrait, bio, specialty, panel order.
 4. **Manage gallery** — upload, assign to `work` / `space`, optionally attach to a barber, reorder, alt text.
+5. **Manage FAQ / policies** — add/edit/reorder Q&A pairs (§13). *(new)*
+6. **Configure referral program** — `[OPEN]`, pending a referral feature spec; when it exists, likely a manager-level toggle mirroring how promotions/services are featured (§12). *(new)*
 
 `[OPEN]` Whether a barber can edit their own profile/portfolio (`staff` level) or only `manager`+ can. Ties to the FS-10.5 permission matrix.
 
@@ -278,6 +327,8 @@ Everything below is a **content dependency**. The design cannot ship ahead of it
 | §9 Gallery — Space | ≥ 6 images | `[NEEDED]` |
 | §10 Environment | 5–8 wide images | `[NEEDED]` |
 | §11 Testimonials | Live Google Business profile with reviews | `[VERIFY]` |
+| §13 FAQ | Final policy copy (cancellation, walk-ins, parking, payment methods) | `[NEEDED]` *(new)* |
+| §9 SEO (below) | Business NAP + hours matching Google Business Profile exactly; 1 image suitable for social link previews | `[VERIFY]` *(new)* |
 
 **Recommendation:** one half-day photo session with a photographer. The pinned sequence (§6) and the environment strip (§10) come from the same lighting setup. Barber portraits and work samples in the same session.
 
@@ -292,6 +343,7 @@ Everything below is a **content dependency**. The design cannot ship ahead of it
 | Hero image | ≤ 300 KB |
 | Total above-fold | ≤ 600 KB |
 | Motion library | prefer CSS + IntersectionObserver; no scroll library unless §10 forces it |
+| Sticky mobile book bar | single fixed-position element, negligible added weight |
 
 All Layer 1 motion must degrade to "content visible, no animation" with JS disabled or `prefers-reduced-motion: reduce`.
 
@@ -302,17 +354,41 @@ All Layer 1 motion must degrade to "content visible, no animation" with JS disab
 
 ---
 
-## 9. Open questions
+## 9. Local SEO & Metadata *(new)*
+
+Not a visual section — this governs the page `<head>` and structured data. Directly supports the local-discoverability work already underway (Google Business Profile optimization).
+
+**Structured data**
+- `LocalBusiness` (or `HairSalon`) JSON-LD in the page head: name, address, phone, geo coordinates, opening hours, price range, image, `sameAs` links to social profiles.
+- **NAP consistency is non-negotiable:** the name, address, and phone in the schema must match the Google Business Profile listing exactly — mismatches actively hurt local ranking rather than doing nothing.
+
+**Social / link previews**
+- Open Graph tags: `og:title`, `og:description`, `og:image` (use the hero image), `og:type` = `business.business`.
+- Twitter Card equivalent (`summary_large_image`).
+- Without these, a shared link to the page renders as bare text in texts/DMs/social — costly given how much of a barbershop's word-of-mouth travels through exactly those channels.
+
+**On-page basics**
+- Unique `<title>` and meta description, written for the query a first-time searcher would actually type ("barber [neighborhood]"), not generic branding copy.
+- Canonical URL tag.
+- Alt text on every image — already required by the data model (§5 `GalleryImage.alt_text`) but applies page-wide, not just the gallery.
+
+**Not in scope here:** sitemap.xml, robots.txt, and a full technical SEO audit — those sit with hosting/infra, not this spec.
+
+---
+
+## 10. Open questions
 
 1. **Eyelash visual treatment** — contrast, continuity, or threshold? (§8) *Blocking design.*
 2. **Counter numbers** — what are the four real figures? (§6) *Drop the counters if they don't exist.*
 3. **Do the assets exist?** (§7) *Blocking build at §6.* If no shoot is planned, §6 falls back to a static image and the page loses its centerpiece.
 4. **Barber self-edit permission** — can a `staff`-level user manage their own portfolio? (§6 admin) *Ties to FS-10.5.*
 5. **Number of barber panels** — two barbers only, or does the lash specialist also get a panel in §7? (She already owns §8.) *Affects section height: 2 panels ≈ 2 viewports, 3 ≈ 3.*
+6. **Referral program** — does one exist to link the strip to, or does §12 stay hidden until one is built? (§12) *Mirrors §3's conditional pattern.* *(new)*
+7. **FAQ copy** — final policy answers (cancellation window, walk-in policy, payment methods) needed from the shop. (§13) *(new)*
 
 ---
 
-## 10. Cross-references
+## 11. Cross-references
 
 | This spec | Existing artifact |
 |---|---|
@@ -323,3 +399,7 @@ All Layer 1 motion must degrade to "content visible, no animation" with JS disab
 | §11 nightly review cache | Data Model §6 (nightly job / `pg_cron`) |
 | §6 admin surface | FS-11 (Admin Configuration), Flow 11 |
 | Two-track separation on both CTAs | Data Model §4 |
+| §1 mobile book bar | New — no existing FS reference; a persistent CTA, not a parallel intake path (same constraint as §2 Hero) *(new)* |
+| §9 Local SEO | Supports the shop's ongoing Google Business Profile work (outside this doc's other artifacts) *(new)* |
+| §12 Referral strip | Pending a referral feature spec — not yet written *(new)* |
+| §13 FAQ / Policies | New — no existing FS reference *(new)* |
