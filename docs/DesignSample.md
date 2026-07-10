@@ -1,10 +1,3 @@
-* https://dribbble.com/shots/24202577-Barbershop-Landing-Page
-* https://dribbble.com/shots/23817581-Barbershop-Website
-* https://dribbble.com/shots/25620369-Barbershop-register-POS-module
-* https://dribbble.com/shots/25358236-Barbershop-Website-Design
-* https://barber-alphai-ai-demo.squarespace.com/?_gl=1*1djvdaz*_up*MQ..*_gs*MQ..&gclid=CjwKCAjw6rfSBhAqEiwA_yocpjpMLehmtGjR7-8tXkf9pDMi-bYOHpy_Q5EjxH-HgrmxZV0PJasqoBoCltIQAvD_BwE&gclsrc=aw.ds&gbraid=0AAAAADxS_FLDiE7XUWaljpL-FNzVsquuT#colors:a=209.23,52.7,70.98;b=0,0,0;da=204.39,79.49,38.24;la=240,10.53,92.55;sda=0,0,0;sia=0,0,0;sida=0,0,100;sila=0,0,0;sla=209.23,52.7,70.98;w=0,0,100
-* https://barber-betai-ai-demo.squarespace.com/#colors:a=24,36.84,81.37;b=0,0,0;da=50,8.33,42.35;la=40,8.11,92.75;sda=0,0,0;sia=0,0,0;sida=0,0,100;sila=0,0,0;sla=24,36.84,81.37;w=0,0,100
 * https://dribbble.com/shots/25308500-CLN-cut-premium-barbershop-website
-* https://dribbble.com/shots/27050873-Victory-Barbershop-Website-Design
+* https://dribbble.com/shots/24202577-Barbershop-Landing-Page
 * https://dribbble.com/shots/20925459-Barber-Shop-Landing-Page
-* https://dribbble.com/shots/14720619-Peter-Barber-Shop-Website
