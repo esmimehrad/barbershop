@@ -1,0 +1,49 @@
+{
+  "shape": "package",
+  "styleSha": "90a15c5cc3289eae6ffb8a9d7387fecfc5b6137db6a2c8cbdeab6535f5460e61",
+  "renderHashes": {
+    "AppointmentCard": "e4ad79d5e7bf9d0a",
+    "Button": "cf00a48b042002f8",
+    "CreditChip": "b562580da2f23bbe",
+    "Input": "ba28c8aea4eb7cab",
+    "ScheduleTable": "d705521dece1b8b3",
+    "SlotPicker": "d28ab9ae04763106",
+    "StatusBadge": "cbb624d5ec9f1443"
+  },
+  "sourceKeys": {
+    "AppointmentCard": "2e9737cd73f0dac2",
+    "Button": "4b9ff4edd88653f5",
+    "CreditChip": "e9bf09b820de7a69",
+    "Input": "69bed8515b21d3f4",
+    "ScheduleTable": "7499883f1defb7fd",
+    "SlotPicker": "6fd501a3e08eb122",
+    "StatusBadge": "5fbc8e89f0daef1b"
+  },
+  "keyRecipe": 7,
+  "scriptsSha": "0f1e261bfa23b5bf",
+  "sourceHashes": {
+    "components/general/AppointmentCard/AppointmentCard.jsx": "365a6d846aab",
+    "components/general/AppointmentCard/AppointmentCard.d.ts": "a580ab6d5e73",
+    "components/general/AppointmentCard/AppointmentCard.prompt.md": "b4257879cc83",
+    "components/general/Button/Button.jsx": "5e8a55518a3b",
+    "components/general/Button/Button.d.ts": "9de8987204b2",
+    "components/general/Button/Button.prompt.md": "2a0c942b68e4",
+    "components/general/CreditChip/CreditChip.jsx": "9a93aaeccc26",
+    "components/general/CreditChip/CreditChip.d.ts": "e2f5b5e663b9",
+    "components/general/CreditChip/CreditChip.prompt.md": "165df7daf6cc",
+    "components/general/Input/Input.jsx": "a36ab457892c",
+    "components/general/Input/Input.d.ts": "55d85e757584",
+    "components/general/Input/Input.prompt.md": "29a4f5f84ec2",
+    "components/general/ScheduleTable/ScheduleTable.jsx": "41c2d31f2897",
+    "components/general/ScheduleTable/ScheduleTable.d.ts": "d35aea5664dc",
+    "components/general/ScheduleTable/ScheduleTable.prompt.md": "f7d1000afcd2",
+    "components/general/SlotPicker/SlotPicker.jsx": "05c33e2f1480",
+    "components/general/SlotPicker/SlotPicker.d.ts": "0ba65f12f389",
+    "components/general/SlotPicker/SlotPicker.prompt.md": "2b428d25d9aa",
+    "components/general/StatusBadge/StatusBadge.jsx": "993c1a807609",
+    "components/general/StatusBadge/StatusBadge.d.ts": "269ef65af168",
+    "components/general/StatusBadge/StatusBadge.prompt.md": "22b1e817bdb6"
+  },
+  "auxSha": "17361311ba2e19bd",
+  "bundleSha12": "1721ae0ec8e6"
+}

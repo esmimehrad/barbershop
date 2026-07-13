@@ -1,7 +1,0 @@
-{
-  "projectId": "20822469-b90f-4489-b97a-84708f0303af",
-  "shape": "package",
-  "pkg": "barbershop-design-system",
-  "cssEntry": "./dist/index.css",
-  "readmeHeader": ".design-sync/conventions.md"
-}

@@ -1,0 +1,222 @@
+{
+  "plugins": [
+    "react",
+    "import"
+  ],
+  "rules": {
+    "react/forbid-elements": [
+      "warn",
+      {
+        "forbid": [
+          {
+            "element": "button",
+            "message": "Use <Button> from the design system instead of <button>."
+          },
+          {
+            "element": "input",
+            "message": "Use <Input> from the design system instead of <input>."
+          }
+        ]
+      }
+    ],
+    "no-restricted-imports": [
+      "warn",
+      {
+        "patterns": [
+          {
+            "group": [
+              "components/general/AppointmentCard/**",
+              "components/general/Button/**",
+              "components/general/CreditChip/**",
+              "components/general/Input/**",
+              "components/general/ScheduleTable/**",
+              "components/general/SlotPicker/**",
+              "components/general/StatusBadge/**"
+            ],
+            "message": "Import design-system components from 'index.js', not component internals."
+          }
+        ]
+      }
+    ],
+    "no-restricted-syntax": [
+      "warn",
+      {
+        "selector": "Literal[value=/#[0-9a-fA-F]{3,8}\\b/]",
+        "message": "Raw hex color — use a design-system color token via var()."
+      },
+      {
+        "selector": "Literal[value=/\\b\\d+px\\b/]",
+        "message": "Raw px value — use a design-system spacing token via var()."
+      },
+      {
+        "selector": "Literal[value=/font-family\\s*:\\s*(?!['\\\"]?(?:Bevan|Archivo))/i]",
+        "message": "Font not provided by the design system. Available: Bevan, Archivo."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='AppointmentCard'] > JSXAttribute > JSXIdentifier[name!=/^(?:service|provider|location|startLabel|status|amountDue|currency|className|key|ref|className|style|children)$/]",
+        "message": "<AppointmentCard> doesn't accept that prop. Declared props: service, provider, location, startLabel, status, amountDue, currency, className."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='AppointmentCard'] > JSXAttribute[name.name='status'] > Literal[value!=/^(?:booked|completed|no_show|late_released|cancelled|waitlisted)$/]",
+        "message": "<AppointmentCard> status must be one of 'booked' | 'completed' | 'no_show' | 'late_released' | 'cancelled' | 'waitlisted'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Button'] > JSXAttribute > JSXIdentifier[name!=/^(?:variant|className|id|style|children|key|ref|className|style|children)$/]",
+        "message": "<Button> doesn't accept that prop. Declared props: variant, className, id, style, children."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Button'] > JSXAttribute[name.name='variant'] > Literal[value!=/^(?:primary|secondary|ghost|critical)$/]",
+        "message": "<Button> variant must be one of 'primary' | 'secondary' | 'ghost' | 'critical'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='CreditChip'] > JSXAttribute > JSXIdentifier[name!=/^(?:amount|currency|label|className|key|ref|className|style|children)$/]",
+        "message": "<CreditChip> doesn't accept that prop. Declared props: amount, currency, label, className."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Input'] > JSXAttribute > JSXIdentifier[name!=/^(?:label|hint|id|className|style|children|key|ref|className|style|children)$/]",
+        "message": "<Input> doesn't accept that prop. Declared props: label, hint, id, className, style, children."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='ScheduleTable'] > JSXAttribute > JSXIdentifier[name!=/^(?:rows|onComplete|onMarkLate|onMarkNoShow|className|key|ref|className|style|children)$/]",
+        "message": "<ScheduleTable> doesn't accept that prop. Declared props: rows, onComplete, onMarkLate, onMarkNoShow, className."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='SlotPicker'] > JSXAttribute > JSXIdentifier[name!=/^(?:dates|selectedDateId|onSelectDate|slots|mode|selectedSlotIds|onToggleSlot|className|key|ref|className|style|children)$/]",
+        "message": "<SlotPicker> doesn't accept that prop. Declared props: dates, selectedDateId, onSelectDate, slots, mode, selectedSlotIds, onToggleSlot, className."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='SlotPicker'] > JSXAttribute[name.name='mode'] > Literal[value!=/^(?:single|ranked)$/]",
+        "message": "<SlotPicker> mode must be one of 'single' | 'ranked'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='StatusBadge'] > JSXAttribute > JSXIdentifier[name!=/^(?:status|label|className|key|ref|className|style|children)$/]",
+        "message": "<StatusBadge> doesn't accept that prop. Declared props: status, label, className."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='StatusBadge'] > JSXAttribute[name.name='status'] > Literal[value!=/^(?:booked|completed|no_show|late_released|cancelled|waitlisted)$/]",
+        "message": "<StatusBadge> status must be one of 'booked' | 'completed' | 'no_show' | 'late_released' | 'cancelled' | 'waitlisted'."
+      }
+    ]
+  },
+  "overrides": [
+    {
+      "files": [
+        "**/index.js"
+      ],
+      "rules": {
+        "no-restricted-imports": "off"
+      }
+    }
+  ],
+  "x-omelette": {
+    "components": {
+      "AppointmentCard": {
+        "replaces": []
+      },
+      "Button": {
+        "replaces": [
+          "button"
+        ]
+      },
+      "CreditChip": {
+        "replaces": []
+      },
+      "Input": {
+        "replaces": [
+          "input"
+        ]
+      },
+      "ScheduleTable": {
+        "replaces": []
+      },
+      "SlotPicker": {
+        "replaces": []
+      },
+      "StatusBadge": {
+        "replaces": []
+      }
+    },
+    "tokens": [
+      "--bds-brass",
+      "--bds-brass-deep",
+      "--bds-critical",
+      "--bds-dur-base",
+      "--bds-dur-fast",
+      "--bds-ease",
+      "--bds-font-body",
+      "--bds-font-display",
+      "--bds-info",
+      "--bds-ink",
+      "--bds-ink-soft",
+      "--bds-line",
+      "--bds-line-strong",
+      "--bds-navy",
+      "--bds-navy-deep",
+      "--bds-paper",
+      "--bds-paper-deep",
+      "--bds-paper-raised",
+      "--bds-radius-md",
+      "--bds-radius-pill",
+      "--bds-radius-sm",
+      "--bds-red",
+      "--bds-red-deep",
+      "--bds-red-ink",
+      "--bds-shadow-md",
+      "--bds-shadow-sm",
+      "--bds-space-1",
+      "--bds-space-2",
+      "--bds-space-3",
+      "--bds-space-4",
+      "--bds-space-5",
+      "--bds-space-6",
+      "--bds-space-7",
+      "--bds-space-8",
+      "--bds-space-9",
+      "--bds-success",
+      "--bds-warning"
+    ],
+    "tokenKinds": {
+      "--bds-ink": "color",
+      "--bds-ink-soft": "color",
+      "--bds-paper": "color",
+      "--bds-paper-raised": "color",
+      "--bds-paper-deep": "color",
+      "--bds-line": "color",
+      "--bds-line-strong": "color",
+      "--bds-red": "color",
+      "--bds-red-deep": "color",
+      "--bds-red-ink": "color",
+      "--bds-navy": "color",
+      "--bds-navy-deep": "color",
+      "--bds-brass": "color",
+      "--bds-brass-deep": "color",
+      "--bds-success": "color",
+      "--bds-warning": "color",
+      "--bds-critical": "color",
+      "--bds-info": "color",
+      "--bds-shadow-sm": "shadow",
+      "--bds-shadow-md": "shadow",
+      "--bds-radius-sm": "radius",
+      "--bds-radius-md": "radius",
+      "--bds-radius-pill": "radius",
+      "--bds-space-1": "spacing",
+      "--bds-space-2": "spacing",
+      "--bds-space-3": "spacing",
+      "--bds-space-4": "spacing",
+      "--bds-space-5": "spacing",
+      "--bds-space-6": "spacing",
+      "--bds-space-7": "spacing",
+      "--bds-space-8": "spacing",
+      "--bds-space-9": "spacing",
+      "--bds-ease": "other",
+      "--bds-dur-fast": "other",
+      "--bds-dur-base": "other",
+      "--bds-font-display": "font",
+      "--bds-font-body": "font"
+    },
+    "fontFamilies": [
+      "Archivo",
+      "Bevan"
+    ]
+  }
+}
