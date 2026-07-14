@@ -1,0 +1,69 @@
+/*
+ * Design tokens — LOW-FI (grayscale wireframe).
+ *
+ * The app styles ONLY against these semantic names (--background, --primary…).
+ * To apply the real heritage brand later, swap each value to its --bds-*
+ * equivalent from design-system/TOKENS.md §3 (the mapping is 1:1). No
+ * component changes are needed — this file is the single color seam.
+ *
+ *   low-fi:  --primary: #444;      --background: #fff;
+ *   brand:   --primary: #a53a2c;   --background: #e8ddc6;   (later)
+ */
+
+:root {
+  /* surfaces & ink */
+  --background: #ffffff;
+  --foreground: #1a1a1a;
+  --card: #f6f6f6;
+  --card-foreground: #1a1a1a;
+  --muted: #ececec;
+  --muted-foreground: #6b6b6b;
+
+  /* roles */
+  --primary: #444444;
+  --primary-foreground: #ffffff;
+  --secondary: #6b6b6b;
+  --accent: #8a8a8a;
+
+  /* lines & focus */
+  --border: #dcdcdc;
+  --input: #cfcfcf;
+  --ring: #8a8a8a;
+
+  /* status */
+  --destructive: #b23b3b;
+  --success: #3f7a4a;
+  --warning: #8a7a3a;
+
+  --radius: 8px;
+
+  /* spacing scale (mirrors --bds-space-*) */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+  --space-8: 64px;
+  --space-9: 96px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #121212;
+    --foreground: #ededed;
+    --card: #1c1c1c;
+    --card-foreground: #ededed;
+    --muted: #232323;
+    --muted-foreground: #9a9a9a;
+    --primary: #cfcfcf;
+    --primary-foreground: #121212;
+    --secondary: #9a9a9a;
+    --accent: #b0b0b0;
+    --border: #2e2e2e;
+    --input: #2e2e2e;
+    --ring: #b0b0b0;
+    --destructive: #d97a6a;
+  }
+}
