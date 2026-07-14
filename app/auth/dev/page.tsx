@@ -1,6 +1,9 @@
 import { devSignIn } from "@/lib/actions/auth";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { SendTestEmailButton } from "./SendTestEmailButton";
+import { SendTestSmsButton } from "./SendTestSmsButton";
+import { SendTestWhatsAppButton } from "./SendTestWhatsAppButton";
 
 type DevUser = {
   email: string;
@@ -63,6 +66,15 @@ export default async function DevSignInPage({
         Requires the Email auth provider enabled in Supabase. Password is shared
         for all dev users.
       </p>
+
+      <div className="flex flex-col gap-3 border-t border-border pt-4">
+        <p className="text-xs text-muted-foreground">
+          Integration checks (sign in first, then return here):
+        </p>
+        <SendTestEmailButton />
+        <SendTestSmsButton />
+        <SendTestWhatsAppButton />
+      </div>
     </main>
   );
 }

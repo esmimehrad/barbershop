@@ -11,6 +11,8 @@ import {
   maxCreditApplicable,
 } from "@/lib/data/credit";
 import { bookingInput } from "@/lib/validation/booking";
+import { sendEmail } from "@/lib/email/resend";
+import { sendSms } from "@/lib/sms/twilio";
 
 function fail(message: string): never {
   redirect(`/book/review?error=${encodeURIComponent(message)}`);
@@ -96,6 +98,48 @@ export async function bookAppointment(formData: FormData) {
       amount: -creditApplied,
       reason: "redemption",
     });
+  }
+
+  // Confirmation notifications — best-effort: a send failure must never block a booking.
+  const when = startsAt.toLocaleString("en-US", {
+    weekday: "long",
+    month: "short",
+    day: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
+  });
+
+  try {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    const recipient = process.env.RESEND_TEST_RECIPIENT ?? user?.email ?? undefined;
+    if (recipient) {
+      await sendEmail({
+        to: recipient,
+        subject: "Your booking is confirmed",
+        html: `<p>You're booked for <strong>${service.name}</strong> on ${when}.</p>
+<p>Amount due at the shop: <strong>$${amountDue.toFixed(2)}</strong>.</p>`,
+      });
+    }
+  } catch {
+    /* email is non-critical; the booking already succeeded */
+  }
+
+  try {
+    const { data: client } = await supabase
+      .from("client")
+      .select("phone")
+      .eq("id", clientId)
+      .maybeSingle();
+    if (client?.phone) {
+      await sendSms({
+        to: client.phone,
+        body: `Booked: ${service.name} on ${when}. Amount due at the shop: $${amountDue.toFixed(2)}.`,
+      });
+    }
+  } catch {
+    /* SMS is non-critical; the booking already succeeded */
   }
 
   revalidatePath("/dashboard");
