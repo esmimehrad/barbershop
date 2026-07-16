@@ -22,7 +22,7 @@ The Supabase backend for the barbershop booking platform is fully scaffolded. Al
 - **Database:** Postgres 17.6
 - **URL:** `https://umarerwvbsqokekotfbw.supabase.co`
 
-### Migrations Applied (10 total)
+### Migrations Applied (11 total)
 
 | # | Migration | What it does |
 |---|---|---|
@@ -36,6 +36,7 @@ The Supabase backend for the barbershop booking platform is fully scaffolded. Al
 | 008 | `rls_policies` | Auth linkage (`user_id` on client/staff), 3 RLS helper functions, ~30 policies across all tables |
 | 009 | `functions_and_triggers` | 6 trigger functions for business logic automation |
 | 010 | `indexes` | 11 performance indexes on critical query paths |
+| 011 | `staff_identity_fields` | Adds nullable first name, last name, email, and E.164 phone fields; lowercased email uniqueness |
 
 ### Tables (20)
 
@@ -74,6 +75,8 @@ All tables have RLS enabled.
 - **Manager+:** credit transactions, credit policy, notifications, referrals
 - **Owner/Manager:** full CRUD on services, staff config, availability, holidays, promotions, gallery, packages, calendar tokens, busy blocks
 - **Owner only:** staff management, customer segments, credit policy
+
+> **Release blocker:** `staff` is publicly readable, so its `email` and `phone` fields are currently publicly readable too. Restrict the contact fields behind an owner/manager-only read path before storing non-test contact data.
 
 ### Credit Policy (seeded)
 

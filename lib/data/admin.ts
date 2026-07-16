@@ -2,10 +2,11 @@ import { createClient } from "@/lib/supabase/server";
 import type { Tables } from "@/types/database";
 
 export type Staff = Tables<"staff">;
+export type { StaffWithContact } from "@/lib/data/staff";
+import type { StaffWithContact } from "@/lib/data/staff";
 export type Service = Tables<"service">;
 export type Availability = Tables<"staff_availability">;
 export type Holiday = Tables<"holiday_closure">;
-export type Segment = Tables<"customer_segment">;
 
 export type PromotionRow = Tables<"promotion"> & {
   trigger_service: { name: string } | null;
@@ -22,6 +23,24 @@ export async function listAllStaff(): Promise<Staff[]> {
   const supabase = await createClient();
   const { data } = await supabase.from("staff").select("*").order("name");
   return data ?? [];
+}
+
+/**
+ * All staff (incl. inactive) with contact info joined — for admin surfaces that
+ * search or display email/phone. RLS on staff_contact still scopes the contact
+ * fields to owner/manager or self.
+ */
+export async function listAllStaffWithContact(): Promise<StaffWithContact[]> {
+  const supabase = await createClient();
+  const { data } = await supabase
+    .from("staff")
+    .select("*, staff_contact(email, phone)")
+    .order("name");
+  return (data ?? []).map((row) => {
+    const { staff_contact, ...staff } = row;
+    const contact = Array.isArray(staff_contact) ? staff_contact[0] : staff_contact;
+    return { ...staff, email: contact?.email ?? null, phone: contact?.phone ?? null };
+  });
 }
 
 export async function listAllServices(): Promise<Service[]> {
@@ -68,12 +87,6 @@ export async function listHolidays(): Promise<Holiday[]> {
     .select("*")
     .gte("date", iso)
     .order("date");
-  return data ?? [];
-}
-
-export async function listSegments(): Promise<Segment[]> {
-  const supabase = await createClient();
-  const { data } = await supabase.from("customer_segment").select("*").order("rank");
   return data ?? [];
 }
 

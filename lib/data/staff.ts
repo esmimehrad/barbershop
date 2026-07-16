@@ -4,6 +4,23 @@ import type { Tables } from "@/types/database";
 export type Staff = Tables<"staff">;
 
 /**
+ * Staff plus their contact info (email/phone). Contact lives in the separate
+ * `staff_contact` table whose RLS restricts reads to owner/manager or the staff
+ * member themselves — so these fields are null for callers who may not see them.
+ */
+export type StaffWithContact = Staff & { email: string | null; phone: string | null };
+
+type StaffContactEmbed = { email: string | null; phone: string | null } | null;
+
+function flattenContact(
+  row: Staff & { staff_contact: StaffContactEmbed | StaffContactEmbed[] },
+): StaffWithContact {
+  const { staff_contact, ...staff } = row;
+  const contact = Array.isArray(staff_contact) ? staff_contact[0] : staff_contact;
+  return { ...staff, email: contact?.email ?? null, phone: contact?.phone ?? null };
+}
+
+/**
  * Providers eligible for a service: role matches Service.allowed_role AND a
  * staff_service assignment exists (the two-track + per-staff gate). The DB
  * trigger enforce_two_track() re-checks this on write.
@@ -43,4 +60,19 @@ export async function listActiveStaff(): Promise<Staff[]> {
     .eq("is_active", true)
     .order("name", { ascending: true });
   return data ?? [];
+}
+
+/**
+ * Active staff with contact info joined in — for staff-facing surfaces (owner
+ * roster, barber detail) that show a `tel:` link. RLS returns email/phone only
+ * to owner/manager or the staff member themselves; others get nulls.
+ */
+export async function listActiveStaffWithContact(): Promise<StaffWithContact[]> {
+  const supabase = await createClient();
+  const { data } = await supabase
+    .from("staff")
+    .select("*, staff_contact(email, phone)")
+    .eq("is_active", true)
+    .order("name", { ascending: true });
+  return (data ?? []).map(flattenContact);
 }

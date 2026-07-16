@@ -6,12 +6,12 @@ import { canSee, getSessionContext, type Section } from "@/lib/auth";
 import {
   accessLevelInput,
   availabilityInput,
+  availabilityUpdateInput,
   holidayInput,
   idInput,
   promotionInput,
-  segmentInput,
+  serviceStaffInput,
   serviceInput,
-  staffServicesInput,
   toggleInput,
 } from "@/lib/validation/admin";
 
@@ -57,30 +57,48 @@ export async function setAccessLevel(fd: FormData): Promise<ActionResult> {
   return error ? { ok: false, error: error.message } : done();
 }
 
-/* ── Staff ↔ service assignment ─────────────────────────────────────────── */
-export async function setStaffServices(fd: FormData): Promise<ActionResult> {
+/** Replace the providers assigned to one service, keeping the role gate intact. */
+export async function setServiceStaff(fd: FormData): Promise<ActionResult> {
   const denied = await authorize("config_admin");
   if (denied) return denied;
 
-  const parsed = staffServicesInput.safeParse({
-    staffId: str(fd, "staffId"),
-    serviceIds: fd.getAll("serviceIds").map(String),
+  const parsed = serviceStaffInput.safeParse({
+    serviceId: str(fd, "serviceId"),
+    staffIds: fd.getAll("staffIds").map(String),
   });
   if (!parsed.success) return { ok: false, error: "Invalid assignment." };
-  const { staffId, serviceIds } = parsed.data;
 
+  const { serviceId } = parsed.data;
+  const staffIds = [...new Set(parsed.data.staffIds)];
   const supabase = await createClient();
-  // Replace the set: clear existing, then insert the checked ones.
+  const { data: service, error: serviceError } = await supabase
+    .from("service")
+    .select("allowed_role")
+    .eq("id", serviceId)
+    .maybeSingle();
+  if (serviceError || !service) return { ok: false, error: "Service not found." };
+
+  if (staffIds.length > 0) {
+    const { data: eligibleStaff, error: staffError } = await supabase
+      .from("staff")
+      .select("id")
+      .in("id", staffIds)
+      .eq("role", service.allowed_role);
+    if (staffError || eligibleStaff?.length !== staffIds.length) {
+      return { ok: false, error: "Only providers with the matching role can be assigned." };
+    }
+  }
+
   const { error: delErr } = await supabase
     .from("staff_service")
     .delete()
-    .eq("staff_id", staffId);
+    .eq("service_id", serviceId);
   if (delErr) return { ok: false, error: delErr.message };
 
-  if (serviceIds.length > 0) {
+  if (staffIds.length > 0) {
     const { error: insErr } = await supabase
       .from("staff_service")
-      .insert(serviceIds.map((service_id) => ({ staff_id: staffId, service_id })));
+      .insert(staffIds.map((staff_id) => ({ staff_id, service_id: serviceId })));
     if (insErr) return { ok: false, error: insErr.message };
   }
   return done();
@@ -124,6 +142,30 @@ export async function deleteAvailability(fd: FormData): Promise<ActionResult> {
     .from("staff_availability")
     .delete()
     .eq("id", parsed.data.id);
+  return error ? { ok: false, error: error.message } : done();
+}
+
+export async function updateAvailability(fd: FormData): Promise<ActionResult> {
+  const denied = await authorize("config_admin");
+  if (denied) return denied;
+
+  const parsed = availabilityUpdateInput.safeParse({
+    id: str(fd, "id"),
+    staffId: str(fd, "staffId"),
+    dayOfWeek: str(fd, "dayOfWeek"),
+    startTime: str(fd, "startTime"),
+    endTime: str(fd, "endTime"),
+  });
+  if (!parsed.success) {
+    return { ok: false, error: parsed.error.issues[0]?.message ?? "Invalid window." };
+  }
+
+  const { id, staffId, dayOfWeek, startTime, endTime } = parsed.data;
+  const supabase = await createClient();
+  const { error } = await supabase
+    .from("staff_availability")
+    .update({ staff_id: staffId, day_of_week: dayOfWeek, start_time: startTime, end_time: endTime })
+    .eq("id", id);
   return error ? { ok: false, error: error.message } : done();
 }
 
@@ -214,27 +256,6 @@ export async function toggleService(fd: FormData): Promise<ActionResult> {
   const { error } = await supabase
     .from("service")
     .update({ is_active: parsed.data.active })
-    .eq("id", parsed.data.id);
-  return error ? { ok: false, error: error.message } : done();
-}
-
-/* ── RFM cashback segments ──────────────────────────────────────────────── */
-export async function updateSegment(fd: FormData): Promise<ActionResult> {
-  const denied = await authorize("config_admin");
-  if (denied) return denied;
-
-  const parsed = segmentInput.safeParse({
-    id: str(fd, "id"),
-    cashbackRate: str(fd, "cashbackRate"),
-  });
-  if (!parsed.success) {
-    return { ok: false, error: "Rate must be between 0 and 1 (e.g. 0.05)." };
-  }
-
-  const supabase = await createClient();
-  const { error } = await supabase
-    .from("customer_segment")
-    .update({ cashback_rate: parsed.data.cashbackRate })
     .eq("id", parsed.data.id);
   return error ? { ok: false, error: error.message } : done();
 }

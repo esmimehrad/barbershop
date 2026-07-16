@@ -4,33 +4,46 @@ import {
   getStaffServiceMatrix,
   listAllServices,
   listAllStaff,
+  listAllStaffWithContact,
   listAvailability,
   listHolidays,
   listPromotions,
-  listSegments,
 } from "@/lib/data/admin";
 import { AccessLevelsTab } from "@/features/admin-config/access-levels-tab";
 import { StaffServicesTab } from "@/features/admin-config/staff-services-tab";
 import { ScheduleTab } from "@/features/admin-config/schedule-tab";
 import { ServicesTab } from "@/features/admin-config/services-tab";
-import { RfmTab } from "@/features/admin-config/rfm-tab";
 import { PromotionsTab } from "@/features/admin-config/promotions-tab";
 
-type TabKey = "access" | "staff" | "schedule" | "services" | "rfm" | "promotions";
+type TabKey = "access" | "staff" | "schedule" | "services" | "promotions";
 
 const TABS: { key: TabKey; label: string; ownerOnly?: boolean }[] = [
   { key: "access", label: "Access levels", ownerOnly: true },
-  { key: "staff", label: "Staff & services" },
+  { key: "staff", label: "Service assignments" },
   { key: "schedule", label: "Schedule & holidays" },
   { key: "services", label: "Services & pricing" },
-  { key: "rfm", label: "RFM cashback" },
   { key: "promotions", label: "Promotions" },
 ];
 
 export default async function SettingsPage({
   searchParams,
 }: {
-  searchParams: Promise<{ tab?: string }>;
+  searchParams: Promise<{
+    tab?: string;
+    serviceId?: string;
+    serviceQuery?: string;
+    serviceType?: string;
+    staffId?: string;
+    scheduleQuery?: string;
+    view?: string;
+    closureQuery?: string;
+    closureStaffId?: string;
+    catalogServiceId?: string;
+    catalogQuery?: string;
+    catalogType?: string;
+    catalogStatus?: string;
+    mode?: string;
+  }>;
 }) {
   const session = await getSessionContext();
 
@@ -51,7 +64,22 @@ export default async function SettingsPage({
   const isOwner = canSee(session.accessLevel, "access_admin");
   const visibleTabs = TABS.filter((t) => !t.ownerOnly || isOwner);
 
-  const { tab } = await searchParams;
+  const {
+    tab,
+    serviceId,
+    serviceQuery,
+    serviceType,
+    staffId,
+    scheduleQuery,
+    view,
+    closureQuery,
+    closureStaffId,
+    catalogServiceId,
+    catalogQuery,
+    catalogType,
+    catalogStatus,
+    mode,
+  } = await searchParams;
   const active: TabKey =
     visibleTabs.find((t) => t.key === tab)?.key ?? "services";
 
@@ -81,12 +109,43 @@ export default async function SettingsPage({
         ))}
       </nav>
 
-      <TabContent active={active} />
+      <TabContent
+        active={active}
+        staffServiceState={{ serviceId, serviceQuery, serviceType }}
+        scheduleState={{ staffId, scheduleQuery, view, closureQuery, closureStaffId }}
+        serviceCatalogState={{ catalogServiceId, catalogQuery, catalogType, catalogStatus, mode }}
+      />
     </div>
   );
 }
 
-async function TabContent({ active }: { active: TabKey }) {
+async function TabContent({
+  active,
+  staffServiceState,
+  scheduleState,
+  serviceCatalogState,
+}: {
+  active: TabKey;
+  staffServiceState: {
+    serviceId?: string;
+    serviceQuery?: string;
+    serviceType?: string;
+  };
+  scheduleState: {
+    staffId?: string;
+    scheduleQuery?: string;
+    view?: string;
+    closureQuery?: string;
+    closureStaffId?: string;
+  };
+  serviceCatalogState: {
+    catalogServiceId?: string;
+    catalogQuery?: string;
+    catalogType?: string;
+    catalogStatus?: string;
+    mode?: string;
+  };
+}) {
   switch (active) {
     case "access": {
       const staff = await listAllStaff();
@@ -94,29 +153,52 @@ async function TabContent({ active }: { active: TabKey }) {
     }
     case "staff": {
       const [staff, services, matrix] = await Promise.all([
-        listAllStaff(),
+        listAllStaffWithContact(),
         listAllServices(),
         getStaffServiceMatrix(),
       ]);
-      return <StaffServicesTab staff={staff} services={services} matrix={matrix} />;
+      return (
+        <StaffServicesTab
+          staff={staff}
+          services={services}
+          matrix={matrix}
+          selectedServiceId={staffServiceState.serviceId}
+          serviceQuery={staffServiceState.serviceQuery}
+          serviceType={staffServiceState.serviceType}
+        />
+      );
     }
     case "schedule": {
       const [staff, availability, holidays] = await Promise.all([
-        listAllStaff(),
+        listAllStaffWithContact(),
         listAvailability(),
         listHolidays(),
       ]);
       return (
-        <ScheduleTab staff={staff} availability={availability} holidays={holidays} />
+        <ScheduleTab
+          staff={staff}
+          availability={availability}
+          holidays={holidays}
+          selectedStaffId={scheduleState.staffId}
+          scheduleQuery={scheduleState.scheduleQuery}
+          view={scheduleState.view}
+          closureQuery={scheduleState.closureQuery}
+          closureStaffId={scheduleState.closureStaffId}
+        />
       );
     }
     case "services": {
       const services = await listAllServices();
-      return <ServicesTab services={services} />;
-    }
-    case "rfm": {
-      const segments = await listSegments();
-      return <RfmTab segments={segments} />;
+      return (
+        <ServicesTab
+          services={services}
+          selectedServiceId={serviceCatalogState.catalogServiceId}
+          catalogQuery={serviceCatalogState.catalogQuery}
+          catalogType={serviceCatalogState.catalogType}
+          catalogStatus={serviceCatalogState.catalogStatus}
+          mode={serviceCatalogState.mode}
+        />
+      );
     }
     case "promotions": {
       const [promotions, services] = await Promise.all([

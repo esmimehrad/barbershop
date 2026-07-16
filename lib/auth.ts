@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import type { Enums } from "@/types/database";
+import { staffDisplayName } from "@/lib/staff-name";
 
 export type AccessLevel = Enums<"access_level">;
 
@@ -34,7 +35,7 @@ export async function getSessionContext(): Promise<SessionContext> {
 
   const { data: staff } = await supabase
     .from("staff")
-    .select("id, name, access_level")
+    .select("id, name, first_name, last_name, access_level")
     .eq("user_id", user.id)
     .maybeSingle();
   if (staff) {
@@ -43,7 +44,7 @@ export async function getSessionContext(): Promise<SessionContext> {
       clientId: null,
       staffId: staff.id,
       accessLevel: staff.access_level,
-      displayName: staff.name,
+      displayName: staffDisplayName(staff),
       kind: "staff",
     };
   }

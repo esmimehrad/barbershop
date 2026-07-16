@@ -16,18 +16,26 @@ export const accessLevelInput = z.object({
   level: accessLevel,
 });
 
-export const staffServicesInput = z.object({
-  staffId: uuid,
-  serviceIds: z.array(uuid),
+export const serviceStaffInput = z.object({
+  serviceId: uuid,
+  staffIds: z.array(uuid),
 });
 
-export const availabilityInput = z
-  .object({
-    staffId: uuid,
-    dayOfWeek: z.coerce.number().int().min(0).max(6),
-    startTime: time,
-    endTime: time,
-  })
+const availabilityFields = z.object({
+  staffId: uuid,
+  dayOfWeek: z.coerce.number().int().min(0).max(6),
+  startTime: time,
+  endTime: time,
+});
+
+export const availabilityInput = availabilityFields
+  .refine((v) => v.startTime < v.endTime, {
+    message: "End must be after start.",
+    path: ["endTime"],
+  });
+
+export const availabilityUpdateInput = availabilityFields
+  .extend({ id: uuid })
   .refine((v) => v.startTime < v.endTime, {
     message: "End must be after start.",
     path: ["endTime"],
@@ -48,11 +56,6 @@ export const serviceInput = z.object({
   allowedRole: staffRole,
   isAddon: z.boolean().default(false),
   isPackage: z.boolean().default(false),
-});
-
-export const segmentInput = z.object({
-  id: uuid,
-  cashbackRate: z.coerce.number().min(0).max(1),
 });
 
 export const promotionInput = z

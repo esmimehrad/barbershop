@@ -2,6 +2,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Select } from "@/components/ui/field";
 import { setAccessLevel } from "@/lib/actions/admin";
 import type { Staff } from "@/lib/data/admin";
+import { staffDisplayName } from "@/lib/staff-name";
 import { ActionForm, SubmitButton } from "./action-form";
 
 const LEVELS = ["staff", "manager", "owner"] as const;
@@ -19,13 +20,13 @@ export function AccessLevelsTab({ staff }: { staff: Staff[] }) {
             <ActionForm action={setAccessLevel} className="flex items-end gap-2">
               <input type="hidden" name="staffId" value={member.id} />
               <div className="flex-1">
-                <div className="text-sm font-medium">{member.name}</div>
+                <div className="text-sm font-medium">{staffDisplayName(member)}</div>
                 <div className="text-xs text-muted-foreground">{member.role}</div>
               </div>
               <Select
                 name="level"
                 defaultValue={member.access_level}
-                aria-label={`Access level for ${member.name}`}
+                aria-label={`Access level for ${staffDisplayName(member)}`}
                 className="w-32"
               >
                 {LEVELS.map((l) => (

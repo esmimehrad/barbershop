@@ -27,7 +27,11 @@
 | Field | Type | Notes |
 |---|---|---|
 | id | UUID (PK) | |
-| name | string | |
+| name | string | legacy single-name fallback during identity backfill |
+| first_name | string (nullable) | staff identity; completed by an administrator |
+| last_name | string (nullable) | staff identity; completed by an administrator |
+| email | string (nullable) | case-insensitively unique when present; private operational contact |
+| phone | E.164 string (nullable) | private operational contact; validated when present |
 | role | enum(`barber`,`lash_specialist`) | gates services performed |
 | access_level | enum(`owner`,`manager`,`staff`) | dashboard permissions; `owner` sets others' levels |
 | is_active | boolean | |

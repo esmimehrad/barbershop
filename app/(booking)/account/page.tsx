@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { getSessionContext } from "@/lib/auth";
 import { getClientProfile } from "@/lib/data/clients";
 import { listClientAppointments } from "@/lib/data/appointments";
+import { staffDisplayName } from "@/lib/staff-name";
 import { formatMoney } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -63,7 +64,7 @@ export default async function AccountPage() {
                           hour: "numeric",
                           minute: "2-digit",
                         })}{" "}
-                        · {a.staff?.name}
+                        · {a.staff ? staffDisplayName(a.staff) : null}
                       </div>
                     </div>
                     <Badge>{a.status}</Badge>

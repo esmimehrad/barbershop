@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { canSee, getSessionContext } from "@/lib/auth";
 import { listTodayAppointments } from "@/lib/data/appointments";
-import { listActiveStaff } from "@/lib/data/staff";
+import { listActiveStaffWithContact } from "@/lib/data/staff";
 import { getDashboardMetrics } from "@/lib/data/metrics";
 import { listRecentActivity } from "@/lib/data/activity";
 import { formatMoney } from "@/lib/utils";
@@ -13,13 +13,20 @@ const pct = (r: number) => `${Math.round(r * 100)}%`;
 export default async function DashboardPage() {
   const session = await getSessionContext();
   const showMetrics = canSee(session.accessLevel, "metrics");
+  const showOwnerSchedule = session.accessLevel === "owner";
 
   const [appts, staff, metrics, activity] = await Promise.all([
     listTodayAppointments(),
-    listActiveStaff(),
+    listActiveStaffWithContact(),
     showMetrics ? getDashboardMetrics() : Promise.resolve(null),
     showMetrics ? listRecentActivity() : Promise.resolve([]),
   ]);
+  const visibleStaff = showOwnerSchedule
+    ? staff
+    : staff.filter((member) => member.id === session.staffId);
+  const visibleAppointments = showOwnerSchedule
+    ? appts
+    : appts.filter((appt) => appt.staff_id === session.staffId);
 
   return (
     <div className="flex flex-col gap-6">
@@ -46,7 +53,11 @@ export default async function DashboardPage() {
 
       <section className="flex flex-col gap-2">
         <h2 className="text-sm font-semibold text-muted-foreground">Schedule</h2>
-        <ProviderColumns staff={staff} appointments={appts} />
+        <ProviderColumns
+          staff={visibleStaff}
+          appointments={visibleAppointments}
+          view={showOwnerSchedule ? "owner" : "barber"}
+        />
       </section>
 
       {metrics ? (

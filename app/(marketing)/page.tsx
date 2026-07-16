@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { listBookableServices } from "@/lib/data/services";
 import { listActiveStaff } from "@/lib/data/staff";
+import { staffDisplayName } from "@/lib/staff-name";
 import { formatMoney } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -58,7 +59,7 @@ export default async function LandingPage() {
             <Card key={m.id}>
               <CardContent className="py-4">
                 <div className="mb-2 aspect-square rounded-[var(--radius)] bg-muted" aria-hidden />
-                <div className="font-medium">{m.name}</div>
+                <div className="font-medium">{staffDisplayName(m)}</div>
                 <div className="text-xs text-muted-foreground">{m.specialty}</div>
               </CardContent>
             </Card>

@@ -31,7 +31,7 @@ async function setStatus(
   return { ok: true };
 }
 
-/** Mark completed → DB trigger fires cashback/referral credit writes. */
+/** Mark completed → DB triggers fire referral and promotion credit writes. */
 export async function markCompleted(appointmentId: string): Promise<Result> {
   return setStatus(appointmentId, "completed");
 }

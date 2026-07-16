@@ -35,6 +35,9 @@
   --success: #3f7a4a;
   --warning: #8a7a3a;
 
+  /* controls */
+  --switch-thumb-off: #ffffff;
+
   --radius: 8px;
 
   /* spacing scale (mirrors --bds-space-*) */

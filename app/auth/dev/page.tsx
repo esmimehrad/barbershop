@@ -21,9 +21,10 @@ const DEV_USERS: DevUser[] = [
 export default async function DevSignInPage({
   searchParams,
 }: {
-  searchParams: Promise<{ error?: string }>;
+  searchParams: Promise<{ error?: string; returnTo?: string }>;
 }) {
-  const { error } = await searchParams;
+  const { error, returnTo } = await searchParams;
+  const customerRedirect = sanitizeReturnTo(returnTo) ?? "/book";
 
   return (
     <main className="mx-auto flex min-h-dvh w-full max-w-md flex-col justify-center gap-4 p-4">
@@ -48,7 +49,11 @@ export default async function DevSignInPage({
           {DEV_USERS.map((u) => (
             <form key={u.email} action={devSignIn}>
               <input type="hidden" name="email" value={u.email} />
-              <input type="hidden" name="redirectTo" value={u.redirectTo} />
+              <input
+                type="hidden"
+                name="redirectTo"
+                value={u.role === "Customer" ? customerRedirect : u.redirectTo}
+              />
               <Button
                 type="submit"
                 variant="secondary"
@@ -77,4 +82,9 @@ export default async function DevSignInPage({
       </div>
     </main>
   );
+}
+
+function sanitizeReturnTo(value: string | undefined): string | null {
+  if (!value || !value.startsWith("/") || value.startsWith("//")) return null;
+  return value;
 }

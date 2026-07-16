@@ -714,9 +714,11 @@ export type Database = {
             | Database["public"]["Enums"]["calendar_provider"]
             | null
           created_at: string
+          first_name: string | null
           id: string
           is_active: boolean
           landing_display_order: number | null
+          last_name: string | null
           name: string
           portrait_url: string | null
           role: Database["public"]["Enums"]["staff_role"]
@@ -732,9 +734,11 @@ export type Database = {
             | Database["public"]["Enums"]["calendar_provider"]
             | null
           created_at?: string
+          first_name?: string | null
           id?: string
           is_active?: boolean
           landing_display_order?: number | null
+          last_name?: string | null
           name: string
           portrait_url?: string | null
           role: Database["public"]["Enums"]["staff_role"]
@@ -750,9 +754,11 @@ export type Database = {
             | Database["public"]["Enums"]["calendar_provider"]
             | null
           created_at?: string
+          first_name?: string | null
           id?: string
           is_active?: boolean
           landing_display_order?: number | null
+          last_name?: string | null
           name?: string
           portrait_url?: string | null
           role?: Database["public"]["Enums"]["staff_role"]
@@ -833,6 +839,38 @@ export type Database = {
             foreignKeyName: "staff_calendar_token_staff_id_fkey"
             columns: ["staff_id"]
             isOneToOne: false
+            referencedRelation: "staff"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      staff_contact: {
+        Row: {
+          created_at: string
+          email: string | null
+          phone: string | null
+          staff_id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          email?: string | null
+          phone?: string | null
+          staff_id: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          email?: string | null
+          phone?: string | null
+          staff_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "staff_contact_staff_id_fkey"
+            columns: ["staff_id"]
+            isOneToOne: true
             referencedRelation: "staff"
             referencedColumns: ["id"]
           },
