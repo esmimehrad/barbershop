@@ -12,7 +12,7 @@ const DEV_PASSWORD = "barbershop123";
  */
 export async function devSignIn(formData: FormData) {
   const email = String(formData.get("email") ?? "");
-  const redirectTo = String(formData.get("redirectTo") ?? "/");
+  const redirectTo = sanitizeRedirectPath(String(formData.get("redirectTo") ?? "/"));
 
   const supabase = await createClient();
   const { error } = await supabase.auth.signInWithPassword({
@@ -21,10 +21,17 @@ export async function devSignIn(formData: FormData) {
   });
 
   if (error) {
-    redirect(`/auth/dev?error=${encodeURIComponent(error.message)}`);
+    const qs = new URLSearchParams({ error: error.message });
+    if (redirectTo !== "/") qs.set("returnTo", redirectTo);
+    redirect(`/auth/dev?${qs.toString()}`);
   }
   revalidatePath("/", "layout");
   redirect(redirectTo);
+}
+
+function sanitizeRedirectPath(value: string): string {
+  if (!value.startsWith("/") || value.startsWith("//")) return "/";
+  return value;
 }
 
 export async function signOut() {

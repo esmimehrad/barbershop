@@ -3,7 +3,8 @@
 Reproducible SQL applied to the live project `umarerwvbsqokekotfbw`. There is no local Supabase stack — the backend is cloud-hosted.
 
 ## Files
-- `seed.sql` — business seed (staff Marco/Sami/Lena, services, package, staff_service, availability, segments, client Ray). Idempotent-guarded.
+- `migrations/` — versioned DDL source; each migration is applied through the Supabase MCP.
+- `seed.sql` — business seed (staff Marco/Sami/Lena, services, package, staff_service, availability, client Ray). Idempotent-guarded.
 - `dev_auth.sql` — **DEV-ONLY** email/password auth users linked to seeded rows via `user_id`. Throwaway; removed when phone OTP ships.
 
 ## Rules

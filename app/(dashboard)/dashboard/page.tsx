@@ -1,25 +1,32 @@
 import Link from "next/link";
 import { canSee, getSessionContext } from "@/lib/auth";
 import { listTodayAppointments } from "@/lib/data/appointments";
+import { listActiveStaffWithContact } from "@/lib/data/staff";
 import { getDashboardMetrics } from "@/lib/data/metrics";
+import { listRecentActivity } from "@/lib/data/activity";
 import { formatMoney } from "@/lib/utils";
 import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { RowActions } from "@/features/schedule/RowActions";
+import { ProviderColumns } from "@/features/schedule/ProviderColumns";
 
-const STATUS_TONE: Record<string, "neutral" | "success" | "warning" | "destructive"> = {
-  booked: "neutral",
-  completed: "success",
-  late_released: "warning",
-  no_show: "destructive",
-  cancelled: "neutral",
-};
+const pct = (r: number) => `${Math.round(r * 100)}%`;
 
 export default async function DashboardPage() {
   const session = await getSessionContext();
-  const appts = await listTodayAppointments();
   const showMetrics = canSee(session.accessLevel, "metrics");
-  const metrics = showMetrics ? await getDashboardMetrics() : null;
+  const showOwnerSchedule = session.accessLevel === "owner";
+
+  const [appts, staff, metrics, activity] = await Promise.all([
+    listTodayAppointments(),
+    listActiveStaffWithContact(),
+    showMetrics ? getDashboardMetrics() : Promise.resolve(null),
+    showMetrics ? listRecentActivity() : Promise.resolve([]),
+  ]);
+  const visibleStaff = showOwnerSchedule
+    ? staff
+    : staff.filter((member) => member.id === session.staffId);
+  const visibleAppointments = showOwnerSchedule
+    ? appts
+    : appts.filter((appt) => appt.staff_id === session.staffId);
 
   return (
     <div className="flex flex-col gap-6">
@@ -37,46 +44,52 @@ export default async function DashboardPage() {
 
       {metrics ? (
         <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
-          <Metric label="Booked" value={String(metrics.bookedToday)} />
-          <Metric label="Completed" value={String(metrics.completedToday)} />
-          <Metric label="No-shows" value={String(metrics.noShowToday)} />
+          <Metric label="Repeat visits ★" value={pct(metrics.repeatRate)} />
+          <Metric label="No-show rate" value={pct(metrics.noShowRate)} />
+          <Metric label="Utilization" value={pct(metrics.utilization)} />
           <Metric label="Credit liability" value={formatMoney(metrics.creditLiability)} />
         </div>
       ) : null}
 
       <section className="flex flex-col gap-2">
         <h2 className="text-sm font-semibold text-muted-foreground">Schedule</h2>
-        {appts.length === 0 ? (
-          <p className="text-sm text-muted-foreground">No appointments today.</p>
-        ) : (
-          <ul className="flex flex-col gap-2">
-            {appts.map((a) => (
-              <li key={a.id}>
-                <Card>
-                  <CardContent className="flex items-center justify-between gap-3 py-3">
-                    <div>
-                      <div className="font-medium tabular-nums">
-                        {new Date(a.starts_at).toLocaleTimeString("en-US", {
-                          hour: "numeric",
-                          minute: "2-digit",
-                        })}{" "}
-                        · {a.client?.name ?? "Client"}
-                      </div>
-                      <div className="text-xs text-muted-foreground">
-                        {a.service?.name} · {a.staff?.name}
-                      </div>
-                      <Badge tone={STATUS_TONE[a.status] ?? "neutral"} className="mt-1">
-                        {a.status}
-                      </Badge>
-                    </div>
-                    <RowActions id={a.id} status={a.status} />
-                  </CardContent>
-                </Card>
-              </li>
-            ))}
-          </ul>
-        )}
+        <ProviderColumns
+          staff={visibleStaff}
+          appointments={visibleAppointments}
+          view={showOwnerSchedule ? "owner" : "barber"}
+        />
       </section>
+
+      {metrics ? (
+        <section className="flex flex-col gap-2">
+          <h2 className="text-sm font-semibold text-muted-foreground">Activity</h2>
+          {activity.length === 0 ? (
+            <p className="text-sm text-muted-foreground">No recent credit activity.</p>
+          ) : (
+            <ul className="flex flex-col gap-1">
+              {activity.map((item) => (
+                <li key={item.id}>
+                  <Card>
+                    <CardContent className="flex items-center justify-between py-2 text-sm">
+                      <span>
+                        <span className="capitalize">{item.reason.replace(/_/g, " ")}</span>
+                        {" · "}
+                        <span className="text-muted-foreground">{item.clientName}</span>
+                      </span>
+                      <span
+                        className={`tabular-nums ${item.amount < 0 ? "text-muted-foreground" : "text-success"}`}
+                      >
+                        {item.amount < 0 ? "−" : "+"}
+                        {formatMoney(Math.abs(item.amount))}
+                      </span>
+                    </CardContent>
+                  </Card>
+                </li>
+              ))}
+            </ul>
+          )}
+        </section>
+      ) : null}
     </div>
   );
 }

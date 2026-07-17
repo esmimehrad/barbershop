@@ -10,6 +10,7 @@ import {
   listBookableServices,
 } from "@/lib/data/services";
 import { getStaff, listProvidersForService } from "@/lib/data/staff";
+import { staffDisplayName } from "@/lib/staff-name";
 import { getAvailableSlots } from "@/lib/data/availability";
 import { getClientCreditBalance, getCreditPolicy, maxCreditApplicable } from "@/lib/data/credit";
 import { getSessionContext } from "@/lib/auth";
@@ -112,7 +113,7 @@ export async function ProviderStep({ params }: { params: BookingParams }) {
           <Link href={buildHref("time", params, { staffId: p.id })}>
             <Card className="hover:bg-muted">
               <CardContent className="py-3">
-                <div className="font-medium">{p.name}</div>
+                <div className="font-medium">{staffDisplayName(p)}</div>
                 {p.specialty ? (
                   <div className="text-xs text-muted-foreground">{p.specialty}</div>
                 ) : null}
@@ -212,6 +213,7 @@ export async function ReviewStep({ params, sp }: { params: BookingParams; sp: Ra
     credit = maxCreditApplicable(balance, service.price, policy?.redemption_cap_pct ?? 0);
   }
   const error = oneOf(sp.error);
+  const returnTo = buildHref("review", params);
   const when = new Date(start).toLocaleString("en-US", {
     weekday: "short",
     hour: "numeric",
@@ -231,7 +233,7 @@ export async function ReviewStep({ params, sp }: { params: BookingParams; sp: Ra
           {addonRows.map((a) => (
             <Row key={a.id} label={`+ ${a.name}`} value={formatMoney(a.price)} muted />
           ))}
-          <Row label={`${staff?.name ?? "Provider"} · ${when}`} value="" muted />
+          <Row label={`${staff ? staffDisplayName(staff) : "Provider"} · ${when}`} value="" muted />
           <hr className="border-border" />
           <Row label="Subtotal" value={formatMoney(subtotal)} />
           {credit > 0 ? <Row label="Credit available" value={`−${formatMoney(credit)}`} muted /> : null}
@@ -253,7 +255,7 @@ export async function ReviewStep({ params, sp }: { params: BookingParams; sp: Ra
           <Button type="submit">Confirm booking</Button>
         </form>
       ) : (
-        <Link href="/auth/dev">
+        <Link href={`/auth/dev?returnTo=${encodeURIComponent(returnTo)}`}>
           <Button className="w-full">Sign in to confirm</Button>
         </Link>
       )}

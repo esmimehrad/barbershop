@@ -44,6 +44,9 @@
   --bds-critical: #e07a5f;
   --bds-info: #82aedd;
 
+  /* ---- controls (dashboard switch thumb — kept from the dashboard line) ---- */
+  --switch-thumb-off: #ffffff;
+
   /* ---- spacing (4/8 rhythm) ---- */
   --bds-space-1: 4px;
   --bds-space-2: 8px;

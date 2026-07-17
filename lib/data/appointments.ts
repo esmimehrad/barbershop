@@ -12,7 +12,7 @@ function todayRange(): { start: string; end: string } {
 }
 
 const APPT_SELECT =
-  "id, starts_at, ends_at, status, amount_due, client:client_id(name), staff:staff_id(name), service:service_id(name)";
+  "id, starts_at, ends_at, status, amount_due, staff_id, client:client_id(id, name, preferences), staff:staff_id(name, first_name, last_name), service:service_id(name)";
 
 export type AppointmentRow = {
   id: string;
@@ -20,8 +20,9 @@ export type AppointmentRow = {
   ends_at: string;
   status: string;
   amount_due: number;
-  client: { name: string } | null;
-  staff: { name: string } | null;
+  staff_id: string;
+  client: { id: string; name: string; preferences: string | null } | null;
+  staff: { name: string; first_name: string | null; last_name: string | null } | null;
   service: { name: string } | null;
 };
 

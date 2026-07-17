@@ -2,19 +2,30 @@
 -- Applied to the live project (umarerwvbsqokekotfbw). Business data only —
 -- dev auth users are seeded separately (see supabase/dev_auth.sql).
 
--- Customer segments (RFM tiers)
-insert into customer_segment (name, cashback_rate, rank)
-select * from (values ('High', 0.08, 1), ('Mid', 0.05, 2), ('Low', 0.03, 3)) v(name, rate, rank)
-where not exists (select 1 from customer_segment);
-
--- Staff
-insert into staff (name, role, access_level, is_active, specialty, bio)
+-- Staff. `name` is the legacy single-name column (kept for compatibility);
+-- first_name/last_name are the scalable identity fields. Contact info
+-- (email/phone) lives in staff_contact (seeded below), not on staff.
+insert into staff (name, first_name, last_name, role, access_level, is_active, specialty, bio)
 select * from (values
-  ('Marco', 'barber'::staff_role, 'owner'::access_level, true, 'Fades & classic cuts', 'Owner and master barber.'),
-  ('Sami',  'barber'::staff_role, 'staff'::access_level, true, 'Beards & line-ups', 'Barber specializing in beard work.'),
-  ('Lena',  'lash_specialist'::staff_role, 'manager'::access_level, true, 'Classic & volume lashes', 'Lash specialist, own track.')
-) v(name, role, access_level, is_active, specialty, bio)
+  ('Marco', 'Marco', 'Bianchi', 'barber'::staff_role,          'owner'::access_level,   true, 'Fades & classic cuts',   'Owner and master barber.'),
+  ('Sami',  'Sami',  'Rahal',   'barber'::staff_role,          'staff'::access_level,   true, 'Beards & line-ups',      'Barber specializing in beard work.'),
+  ('Lena',  'Lena',  'Fischer', 'lash_specialist'::staff_role, 'manager'::access_level, true, 'Classic & volume lashes','Lash specialist, own track.')
+) v(name, first_name, last_name, role, access_level, is_active, specialty, bio)
 where not exists (select 1 from staff);
+
+-- Staff contact (owner/manager/self-readable via RLS). CLEARLY FAKE dev/test
+-- data only: @dev.local emails and the fictional +1 202 555 01xx phone range.
+-- Real contact data is never seeded. Migration 011 also backfills email from
+-- the linked auth.users row; this covers a from-scratch seed.
+insert into staff_contact (staff_id, email, phone)
+select s.id, v.email, v.phone
+from (values
+  ('Marco', 'marco@dev.local', '+12025550101'),
+  ('Sami',  'sami@dev.local',  '+12025550102'),
+  ('Lena',  'lena@dev.local',  '+12025550103')
+) v(name, email, phone)
+join staff s on s.name = v.name
+where not exists (select 1 from staff_contact);
 
 -- Services (base, add-ons, package, eyelash)
 insert into service (name, type, duration_minutes, price, allowed_role, is_addon, is_package, is_active)
@@ -49,11 +60,10 @@ from staff s cross join (values (1),(2),(3),(4),(5)) d(dow)
 where s.is_active
 and not exists (select 1 from staff_availability);
 
--- A returning client (Ray) with a usual provider, a segment, and $18 credit
-insert into client (name, phone, referral_code, preferred_channel, usual_provider_id, rfm_segment_id)
+-- A returning client (Ray) with a usual provider and $18 credit
+insert into client (name, phone, referral_code, preferred_channel, usual_provider_id)
 select 'Ray Ortiz', '+14155550123', 'FADE-RAY001', 'sms',
-       (select id from staff where name = 'Marco'),
-       (select id from customer_segment where name = 'Mid')
+       (select id from staff where name = 'Marco')
 where not exists (select 1 from client where phone = '+14155550123');
 
 -- Ray's opening credit balance via the ledger (trigger recomputes credit_balance)

@@ -27,12 +27,17 @@ export function RowActions({ id, status }: { id: string; status: string }) {
   }
 
   return (
-    <div className="flex flex-col items-end gap-1">
-      <div className="flex gap-1">
-        <Button disabled={pending} onClick={() => run(markCompleted)}>
+    <div className="flex flex-col gap-1">
+      <div className="grid grid-cols-3 gap-1">
+        <Button
+          className="w-full px-2 text-xs whitespace-nowrap"
+          disabled={pending}
+          onClick={() => run(markCompleted)}
+        >
           Done
         </Button>
         <Button
+          className="w-full px-2 text-xs whitespace-nowrap"
           variant="secondary"
           disabled={pending}
           onClick={() =>
@@ -42,6 +47,7 @@ export function RowActions({ id, status }: { id: string; status: string }) {
           Late
         </Button>
         <Button
+          className="w-full px-2 text-xs whitespace-nowrap"
           variant="destructive"
           disabled={pending}
           onClick={() => confirmRun("Mark this appointment a no-show?", markNoShow)}
