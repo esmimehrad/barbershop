@@ -1,6 +1,6 @@
 # components/ui/ — low-fi primitives
 
-Hand-rolled, token-driven primitives for the low-fi draft: `button`, `card`, `badge`, `field`, `app-header`.
+Hand-rolled, token-driven primitives for the low-fi draft: `button`, `card`, `badge`, `field`, `app-header`. Plus several cross-surface primitives built for the landing page but reusable anywhere: `figure-image` (image slot that degrades to an on-brand placeholder when the file isn't present yet, delegates real-photo rendering to `loaded-image`), `loaded-image` (client island: shows `razor-spinner` until the real photo has actually loaded, then fades it in with a hover zoom), `scroll-reveal` (IntersectionObserver → CSS reveal wrapper, reduced-motion aware), `razor-spinner` (brand loading spinner — CSS-animated, no dependency; a redrawn SVG, not the raw reference photo — see its own doc comment for why), and `scissors-mark` (the animated nav logo — two SVG blades opening/closing around a shared pivot).
 
 ## Rules
 - Style **only** via semantic tokens / Tailwind utilities (`bg-primary`, `text-muted-foreground`, `rounded-[var(--radius)]`). No raw hex, no raw px.

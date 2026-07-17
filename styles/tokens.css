@@ -1,69 +1,94 @@
 /*
- * Design tokens — LOW-FI (grayscale wireframe).
+ * Design tokens — Fadehouse brand: black & gold, single fixed dark theme.
  *
- * The app styles ONLY against these semantic names (--background, --primary…).
- * To apply the real heritage brand later, swap each value to its --bds-*
- * equivalent from design-system/TOKENS.md §3 (the mapping is 1:1). No
- * component changes are needed — this file is the single color seam.
+ * The app styles ONLY against the semantic names below (--background,
+ * --primary…). This file is the single color/type/spacing seam — component
+ * code never changes when the brand is refreshed, only these values do.
  *
- *   low-fi:  --primary: #444;      --background: #fff;
- *   brand:   --primary: #a53a2c;   --background: #e8ddc6;   (later)
+ * Deliberately NOT following design-system/TOKENS.md's cream-paper light
+ * default or its navy secondary — the client wants a permanently black/
+ * charcoal background with a gold (not red) primary, no light/OS-driven
+ * variant. Spacing/radius/motion/type primitives still follow the design
+ * system; only the color primitives are overridden here.
  */
 
 :root {
-  /* surfaces & ink */
-  --background: #ffffff;
-  --foreground: #1a1a1a;
-  --card: #f6f6f6;
-  --card-foreground: #1a1a1a;
-  --muted: #ececec;
-  --muted-foreground: #6b6b6b;
+  /* ---- surfaces & ink (always-dark; no light-mode variant) ---- */
+  --bds-ink: #f3ede2;
+  --bds-ink-soft: #a89d8d;
+  --bds-paper: #121110;
+  --bds-paper-raised: #1e1b17;
+  --bds-paper-deep: #0a0908;
+  --bds-line: rgba(243, 237, 226, 0.12);
+  --bds-line-strong: rgba(243, 237, 226, 0.24);
 
-  /* roles */
-  --primary: #444444;
-  --primary-foreground: #ffffff;
-  --secondary: #6b6b6b;
-  --accent: #8a8a8a;
+  /* ---- primary: gold, not red ---- */
+  --bds-gold: #d7a13c;
+  --bds-gold-deep: #b3822c;
+  --bds-gold-ink: #1a1712;
 
-  /* lines & focus */
-  --border: #dcdcdc;
-  --input: #cfcfcf;
-  --ring: #8a8a8a;
+  /* ---- kept for design-system fidelity; unused in this build's visible UI ---- */
+  --bds-red: #a53a2c;
+  --bds-red-deep: #7d2a20;
+  --bds-red-ink: #ffffff;
+  --bds-navy: #1f3a5c;
+  --bds-navy-deep: #16293f;
 
-  /* status */
-  --destructive: #b23b3b;
-  --success: #3f7a4a;
-  --warning: #8a7a3a;
+  /* ---- accent (focus ring, secondary highlights) — a warmer bronze-gold, distinct from primary ---- */
+  --bds-brass: #9c762e;
+  --bds-brass-deep: #7a5b22;
 
-  --radius: 8px;
+  /* ---- status (tuned for readability on the dark surface above) ---- */
+  --bds-success: #74b982;
+  --bds-warning: #d3ab5f;
+  --bds-critical: #e07a5f;
+  --bds-info: #82aedd;
 
-  /* spacing scale (mirrors --bds-space-*) */
-  --space-1: 4px;
-  --space-2: 8px;
-  --space-3: 12px;
-  --space-4: 16px;
-  --space-5: 24px;
-  --space-6: 32px;
-  --space-7: 48px;
-  --space-8: 64px;
-  --space-9: 96px;
-}
+  /* ---- spacing (4/8 rhythm) ---- */
+  --bds-space-1: 4px;
+  --bds-space-2: 8px;
+  --bds-space-3: 12px;
+  --bds-space-4: 16px;
+  --bds-space-5: 24px;
+  --bds-space-6: 32px;
+  --bds-space-7: 48px;
+  --bds-space-8: 64px;
+  --bds-space-9: 96px;
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #121212;
-    --foreground: #ededed;
-    --card: #1c1c1c;
-    --card-foreground: #ededed;
-    --muted: #232323;
-    --muted-foreground: #9a9a9a;
-    --primary: #cfcfcf;
-    --primary-foreground: #121212;
-    --secondary: #9a9a9a;
-    --accent: #b0b0b0;
-    --border: #2e2e2e;
-    --input: #2e2e2e;
-    --ring: #b0b0b0;
-    --destructive: #d97a6a;
-  }
+  /* ---- radius / shadow / motion ---- */
+  --bds-radius-sm: 4px;
+  --bds-radius-md: 9px;
+  --bds-radius-pill: 999px;
+  --bds-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.35);
+  --bds-shadow-md: 0 6px 20px rgba(0, 0, 0, 0.5);
+  --bds-ease: cubic-bezier(0.4, 0, 0.2, 1);
+  --bds-dur-fast: 120ms;
+  --bds-dur-base: 200ms;
+  --bds-dur-slow: 420ms;
+
+  /* ---- type (family vars are supplied by next/font/local, see lib/fonts.ts) ---- */
+  --bds-font-display: var(--font-bevan), serif;
+  --bds-font-body: var(--font-archivo), sans-serif;
+
+  /* ---- semantic aliases (shadcn/Tailwind bridge) ---- */
+  --background: var(--bds-paper);
+  --foreground: var(--bds-ink);
+  --card: var(--bds-paper-raised);
+  --card-foreground: var(--bds-ink);
+  --muted: var(--bds-paper-raised);
+  --muted-foreground: var(--bds-ink-soft);
+  --primary: var(--bds-gold);
+  --primary-foreground: var(--bds-gold-ink);
+  --secondary: var(--bds-paper-deep);
+  --secondary-foreground: var(--bds-ink);
+  --accent: var(--bds-brass);
+  --accent-foreground: #ffffff;
+  --border: var(--bds-line-strong);
+  --input: var(--bds-line-strong);
+  --ring: var(--bds-gold);
+  --destructive: var(--bds-critical);
+  --success: var(--bds-success);
+  --warning: var(--bds-warning);
+
+  --radius: var(--bds-radius-md);
 }

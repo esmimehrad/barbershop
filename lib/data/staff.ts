@@ -35,12 +35,14 @@ export async function getStaff(id: string): Promise<Staff | null> {
   return data;
 }
 
+/** Active staff for landing display: curated order first, then name as a tiebreaker. */
 export async function listActiveStaff(): Promise<Staff[]> {
   const supabase = await createClient();
   const { data } = await supabase
     .from("staff")
     .select("*")
     .eq("is_active", true)
+    .order("landing_display_order", { ascending: true, nullsFirst: false })
     .order("name", { ascending: true });
   return data ?? [];
 }

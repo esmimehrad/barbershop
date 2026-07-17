@@ -12,24 +12,131 @@
   --color-primary: var(--primary);
   --color-primary-foreground: var(--primary-foreground);
   --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
   --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
   --color-destructive: var(--destructive);
   --color-success: var(--success);
   --color-warning: var(--warning);
-  --radius: var(--radius);
+
+  --radius-sm: var(--bds-radius-sm);
+  --radius-md: var(--radius);
+  --radius-pill: var(--bds-radius-pill);
+
+  --shadow-sm: var(--bds-shadow-sm);
+  --shadow-md: var(--bds-shadow-md);
+
+  --ease-bds: var(--bds-ease);
+  --duration-fast: var(--bds-dur-fast);
+  --duration-base: var(--bds-dur-base);
+  --duration-slow: var(--bds-dur-slow);
+
+  --font-display: var(--bds-font-display);
+  --font-body: var(--bds-font-body);
+
+  --spacing-1: var(--bds-space-1);
+  --spacing-2: var(--bds-space-2);
+  --spacing-3: var(--bds-space-3);
+  --spacing-4: var(--bds-space-4);
+  --spacing-5: var(--bds-space-5);
+  --spacing-6: var(--bds-space-6);
+  --spacing-7: var(--bds-space-7);
+  --spacing-8: var(--bds-space-8);
+  --spacing-9: var(--bds-space-9);
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: ui-sans-serif, system-ui, -apple-system, sans-serif;
+  font-family: var(--bds-font-body);
 }
 
-/* Low-fi: keep a visible focus ring everywhere (accessibility baseline) */
+h1,
+h2,
+h3,
+.font-display {
+  font-family: var(--bds-font-display);
+  letter-spacing: 0.01em;
+}
+
+/* Visible focus ring everywhere — the brass ring is part of the brand contract, never remove it. */
 *:focus-visible {
   outline: 2px solid var(--ring);
   outline-offset: 2px;
+}
+
+/* Slogan moment: scale in as it crosses the viewport, via the CSS scroll-driven-animations
+   spec. Progressive enhancement only — browsers without support just show the resting size,
+   never a broken/invisible state. */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .scale-on-scroll {
+      animation: scale-on-scroll linear both;
+      animation-timeline: view();
+      animation-range: entry 0% cover 40%;
+    }
+  }
+}
+
+@keyframes scale-on-scroll {
+  from {
+    transform: scale(0.85);
+    opacity: 0.5;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* Nav logo idle motion — the two ScissorsMark blades snip open and closed, opposite phase. */
+@keyframes scissors-a {
+  0%,
+  100% {
+    transform: rotate(12deg);
+  }
+  50% {
+    transform: rotate(26deg);
+  }
+}
+@keyframes scissors-b {
+  0%,
+  100% {
+    transform: rotate(-12deg);
+  }
+  50% {
+    transform: rotate(-26deg);
+  }
+}
+.animate-scissors-a {
+  animation: scissors-a 2.2s ease-in-out infinite;
+}
+.animate-scissors-b {
+  animation: scissors-b 2.2s ease-in-out infinite;
+}
+
+/* Marquee ribbon — track renders its item list twice; translating exactly -50% loops seamlessly. */
+@keyframes marquee {
+  to {
+    transform: translateX(-50%);
+  }
+}
+.animate-marquee {
+  animation: marquee 22s linear infinite;
+}
+
+/* Scroll-driven reveals degrade to instantly-visible content; nothing here depends on this
+   block alone (ScrollReveal also checks matchMedia), this is belt-and-suspenders. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

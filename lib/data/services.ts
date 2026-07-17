@@ -17,6 +17,19 @@ export async function listBookableServices(track: Track): Promise<Service[]> {
   return data ?? [];
 }
 
+/** Services flagged for landing-page hero/featured display within a track. */
+export async function listFeaturedServices(track: Track): Promise<Service[]> {
+  const supabase = await createClient();
+  const { data } = await supabase
+    .from("service")
+    .select("*")
+    .eq("type", track)
+    .eq("is_featured_on_landing", true)
+    .eq("is_active", true)
+    .order("landing_display_order", { ascending: true, nullsFirst: false });
+  return data ?? [];
+}
+
 /** Add-ons attachable within a track. */
 export async function listAddons(track: Track): Promise<Service[]> {
   const supabase = await createClient();

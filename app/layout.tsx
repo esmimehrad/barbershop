@@ -1,9 +1,15 @@
 import type { Metadata } from "next";
+import { bevan, archivo } from "@/lib/fonts";
+import { businessInfo } from "@/features/marketing/business-info";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Barbershop — Booking",
-  description: "Low-fi draft of the barbershop booking platform.",
+  metadataBase: new URL(businessInfo.domain),
+  title: {
+    default: "Fadehouse — Barbershop & Lash Studio",
+    template: "%s — Fadehouse",
+  },
+  description: "Precision cuts and lash artistry. Book your seat at Fadehouse.",
 };
 
 export const viewport = {
@@ -15,7 +21,11 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className="h-full antialiased" suppressHydrationWarning>
+    <html
+      lang="en"
+      className={`h-full antialiased ${bevan.variable} ${archivo.variable}`}
+      suppressHydrationWarning
+    >
       <body
         className="min-h-dvh flex flex-col bg-background text-foreground"
         suppressHydrationWarning
