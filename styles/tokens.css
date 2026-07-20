@@ -69,9 +69,9 @@
   --bds-dur-base: 200ms;
   --bds-dur-slow: 420ms;
 
-  /* ---- type (family vars are supplied by next/font/local, see lib/fonts.ts) ---- */
-  --bds-font-display: var(--font-bevan), serif;
-  --bds-font-body: var(--font-archivo), sans-serif;
+  /* ---- type (family vars are supplied by next/font/google, see lib/fonts.ts) ---- */
+  --bds-font-display: var(--font-display), Georgia, serif;
+  --bds-font-body: var(--font-body), ui-sans-serif, system-ui, sans-serif;
 
   /* ---- semantic aliases (shadcn/Tailwind bridge) ---- */
   --background: var(--bds-paper);

@@ -8,7 +8,7 @@ import { formatMoney } from "@/lib/utils";
 
 export function EyelashShowcase({ services }: { services: Service[] }) {
   return (
-    <section className="bg-[var(--bds-paper-raised)] px-4 py-16 sm:px-6 sm:py-24">
+    <section className="bg-[var(--bds-paper-raised)] px-4 py-12 sm:px-6 sm:py-24">
       <div className="mx-auto grid w-full max-w-6xl grid-cols-1 items-center gap-10 lg:grid-cols-2 lg:gap-16">
         <ScrollReveal>
           <BeforeAfterSlider
@@ -35,7 +35,7 @@ export function EyelashShowcase({ services }: { services: Service[] }) {
           <p className="text-sm font-medium uppercase tracking-[0.2em] text-primary">
             Lash Studio
           </p>
-          <h2 className="font-display mt-3 text-3xl text-foreground sm:text-4xl">
+          <h2 className="font-display mt-3 text-2xl text-foreground sm:text-4xl">
             Lashes that do the mornings for you.
           </h2>
           <p className="mt-5 text-base leading-relaxed text-muted-foreground">

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { bevan, archivo } from "@/lib/fonts";
+import { displayFont, bodyFont } from "@/lib/fonts";
 import { businessInfo } from "@/features/marketing/business-info";
 import "./globals.css";
 
@@ -23,7 +23,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`h-full antialiased ${bevan.variable} ${archivo.variable}`}
+      className={`h-full antialiased ${displayFont.variable} ${bodyFont.variable}`}
       suppressHydrationWarning
     >
       <body

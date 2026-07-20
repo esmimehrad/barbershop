@@ -52,6 +52,7 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--bds-font-body);
+  line-height: 1.55;
 }
 
 h1,
@@ -59,13 +60,28 @@ h2,
 h3,
 .font-display {
   font-family: var(--bds-font-display);
-  letter-spacing: 0.01em;
+  /* Cormorant is a light, high-contrast serif — give headings weight and a hair
+     of negative tracking so they read as deliberate display type, not body copy. */
+  font-weight: 600;
+  letter-spacing: -0.01em;
 }
 
 /* Visible focus ring everywhere — the brass ring is part of the brand contract, never remove it. */
 *:focus-visible {
   outline: 2px solid var(--ring);
   outline-offset: 2px;
+}
+
+/* Custom cursor: hide the native pointer while CustomCursor is mounted (fine-pointer only —
+   the class is added by JS, so touch/no-JS keep the native cursor). Keep the text I-beam on
+   editable fields so typing still reads naturally. */
+.custom-cursor-active,
+.custom-cursor-active * {
+  cursor: none !important;
+}
+.custom-cursor-active input,
+.custom-cursor-active textarea {
+  cursor: text !important;
 }
 
 /* Slogan moment: scale in as it crosses the viewport, via the CSS scroll-driven-animations

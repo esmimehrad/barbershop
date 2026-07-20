@@ -39,15 +39,15 @@ function GalleryGroup({ title, images }: { title: string; images: GalleryImage[]
 
 export function Gallery({ work, space }: { work: GalleryImage[]; space: GalleryImage[] }) {
   return (
-    <section id="gallery" className="mx-auto w-full max-w-6xl px-4 py-16 sm:px-6 sm:py-24">
+    <section id="gallery" className="mx-auto w-full max-w-6xl px-4 py-12 sm:px-6 sm:py-24">
       <ScrollReveal>
-        <h2 className="font-display text-3xl text-foreground sm:text-4xl">Gallery</h2>
+        <h2 className="font-display text-2xl text-foreground sm:text-4xl">Gallery</h2>
         <p className="mt-2 max-w-xl text-muted-foreground">
           A look at the work, and the space it happens in.
         </p>
       </ScrollReveal>
 
-      <div className="mt-10 grid grid-cols-1 gap-10 sm:grid-cols-2">
+      <div className="mt-8 grid grid-cols-1 gap-8 sm:mt-10 sm:gap-10 sm:grid-cols-2">
         <GalleryGroup title="Work" images={work} />
         <GalleryGroup title="Space" images={space} />
       </div>

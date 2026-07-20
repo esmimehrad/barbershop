@@ -9,7 +9,7 @@ import { ScrollReveal } from "@/components/ui/scroll-reveal";
  */
 export function About() {
   return (
-    <section id="about" className="mx-auto w-full max-w-6xl px-4 py-16 sm:px-6 sm:py-24">
+    <section id="about" className="mx-auto w-full max-w-6xl px-4 py-12 sm:px-6 sm:py-24">
       <div className="grid grid-cols-1 items-center gap-10 lg:grid-cols-2 lg:gap-16">
         <ScrollReveal>
           <FigureImage
@@ -24,7 +24,7 @@ export function About() {
           <p className="text-sm font-medium uppercase tracking-[0.2em] text-primary">
             What sets us apart
           </p>
-          <h2 className="font-display mt-3 text-3xl text-foreground sm:text-4xl">
+          <h2 className="font-display mt-3 text-2xl text-foreground sm:text-4xl">
             Not a chain. Not a franchise. Just craft.
           </h2>
           <p className="mt-5 text-base leading-relaxed text-muted-foreground">

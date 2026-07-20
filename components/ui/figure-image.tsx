@@ -18,6 +18,8 @@ export interface FigureImageProps {
   alt: string;
   placeholderVariant?: PlaceholderVariant;
   className?: string;
+  /** Override the placeholder background (default is the warm paper gradient) — e.g. "bg-black". */
+  placeholderClassName?: string;
   /** Forwarded to next/image; set true only for the single largest above-fold image. */
   priority?: boolean;
   sizes?: string;
@@ -36,6 +38,7 @@ export function FigureImage({
   alt,
   placeholderVariant = "wide",
   className,
+  placeholderClassName,
   priority,
   sizes,
   fill = true,
@@ -50,13 +53,13 @@ export function FigureImage({
         aria-label={alt}
         className={cn(
           "relative flex items-center justify-center overflow-hidden",
-          "bg-[linear-gradient(135deg,var(--bds-paper-deep),var(--bds-paper-raised))]",
+          placeholderClassName ?? "bg-[linear-gradient(135deg,var(--bds-paper-deep),var(--bds-paper-raised))]",
           className,
         )}
       >
         <Icon
           aria-hidden="true"
-          className="h-1/4 w-1/4 min-h-8 min-w-8 max-h-16 max-w-16 text-[var(--bds-ink-soft)] opacity-40"
+          className="h-1/5 w-1/5 min-h-6 min-w-6 max-h-10 max-w-10 text-[var(--bds-ink-soft)] opacity-40 sm:max-h-14 sm:max-w-14"
           strokeWidth={1.25}
         />
       </div>

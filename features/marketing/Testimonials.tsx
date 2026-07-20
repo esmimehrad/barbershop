@@ -4,15 +4,15 @@ import { ScrollReveal } from "@/components/ui/scroll-reveal";
 
 export function Testimonials() {
   return (
-    <section className="bg-[var(--bds-paper-raised)] px-4 py-16 sm:px-6 sm:py-24">
+    <section className="bg-[var(--bds-paper-raised)] px-4 py-12 sm:px-6 sm:py-24">
       <div className="mx-auto w-full max-w-6xl">
         <ScrollReveal>
-          <h2 className="font-display text-3xl text-foreground sm:text-4xl">
+          <h2 className="font-display text-2xl text-foreground sm:text-4xl">
             What guests are saying
           </h2>
         </ScrollReveal>
 
-        <div className="mt-10 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="mt-8 grid grid-cols-1 gap-4 sm:mt-10 sm:gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {testimonials.map((t, i) => (
             <ScrollReveal key={t.id} delayMs={Math.min(i * 80, 240)}>
               <figure className="flex h-full flex-col gap-4 rounded-[var(--radius)] border border-border bg-card p-6 shadow-sm transition-[box-shadow,transform,border-color,background-color] duration-slow ease-bds hover:-translate-y-1 hover:border-primary hover:bg-primary/10 hover:shadow-md">

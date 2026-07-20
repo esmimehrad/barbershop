@@ -20,7 +20,7 @@ export function RazorSpinner({ className, label = "Loading" }: RazorSpinnerProps
     <div role="status" aria-label={label} className={cn("inline-flex", className)}>
       <svg
         viewBox="0 0 48 48"
-        className="h-10 w-10 animate-spin text-[var(--bds-brass)]"
+        className="h-8 w-8 animate-spin text-[var(--bds-brass)] sm:h-10 sm:w-10"
         style={{ animationDuration: "1.1s" }}
         aria-hidden="true"
       >

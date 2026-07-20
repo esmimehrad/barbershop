@@ -1,5 +1,5 @@
 import { listBookableServices, listFeaturedServices } from "@/lib/data/services";
-import { listActiveStaff } from "@/lib/data/staff";
+import { listActiveBarbers } from "@/lib/data/staff";
 import { listGalleryImages } from "@/lib/data/gallery";
 import { Hero } from "@/features/marketing/Hero";
 import { Services } from "@/features/marketing/Services";
@@ -17,12 +17,12 @@ import { Contact } from "@/features/marketing/Contact";
 export const revalidate = 3600;
 
 export default async function LandingPage() {
-  const [featuredHaircuts, haircuts, eyelash, staff, galleryWork, gallerySpace] =
+  const [featuredHaircuts, haircuts, eyelash, barbers, galleryWork, gallerySpace] =
     await Promise.all([
       listFeaturedServices("haircut"),
       listBookableServices("haircut"),
       listBookableServices("eyelash"),
-      listActiveStaff(),
+      listActiveBarbers(),
       listGalleryImages("work"),
       listGalleryImages("space"),
     ]);
@@ -37,7 +37,7 @@ export default async function LandingPage() {
       <Marquee />
       <SloganMoment />
       <About />
-      <MeetTheTeam staff={staff} />
+      <MeetTheTeam staff={barbers} />
       <EyelashShowcase services={eyelash} />
       <Gallery work={galleryWork} space={gallerySpace} />
       <Testimonials />

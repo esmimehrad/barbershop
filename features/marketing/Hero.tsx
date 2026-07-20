@@ -7,11 +7,14 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import type { Service } from "@/lib/data/services";
 import { RazorSpinner } from "@/components/ui/razor-spinner";
 import { HeroContent } from "@/features/marketing/HeroContent";
+import { HeroIntro } from "@/features/marketing/HeroIntro";
 
 const FRAME_COUNT = 120;
 const framePath = (n: number) => `/hero-sequence/frame-${String(n).padStart(4, "0")}.webp`;
-/** Total scroll distance (in viewport heights) the sequence plays across. */
+/** Scroll distance (in viewport heights) the sequence plays across — shorter on mobile so
+ *  phone users don't have to scroll as far to clear the hero. */
 const SEQUENCE_HEIGHT_VH = 180;
+const SEQUENCE_HEIGHT_VH_MOBILE = 110;
 
 /**
  * The landing hero. Always server/first-paints as `StaticHero` — real
@@ -68,13 +71,24 @@ function CinematicHero({ services }: { services: Service[] }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const overlayRef = useRef<HTMLDivElement>(null);
+  const introRef = useRef<HTMLDivElement>(null);
   const currentFrameRef = useRef(-1);
   const [ready, setReady] = useState(false);
+  const [introShown, setIntroShown] = useState(false);
 
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger);
     let cancelled = false;
     const images: HTMLImageElement[] = new Array(FRAME_COUNT);
+
+    // Shorter scroll runway on phones — measured before ScrollTrigger reads the height.
+    const isMobile = window.matchMedia("(max-width: 640px)").matches;
+    if (containerRef.current) {
+      containerRef.current.style.height = `${isMobile ? SEQUENCE_HEIGHT_VH_MOBILE : SEQUENCE_HEIGHT_VH}vh`;
+    }
+
+    // Fade the intro booking prompt in on the next frame (not on scroll).
+    const introTimer = requestAnimationFrame(() => setIntroShown(true));
 
     function drawFrame(index: number) {
       const canvas = canvasRef.current;
@@ -138,6 +152,21 @@ function CinematicHero({ services }: { services: Service[] }) {
           const p = Math.min(1, Math.max(0, (self.progress - 0.82) / 0.18));
           overlayRef.current.style.opacity = String(p);
           overlayRef.current.style.transform = `translateY(${(1 - p) * 20}px)`;
+          // Only capture clicks once actually revealed — otherwise this opacity:0
+          // layer sits on top of the intro and swallows its button taps.
+          overlayRef.current.style.pointerEvents = p > 0.5 ? "auto" : "none";
+        }
+        if (introRef.current) {
+          // Intro booking prompt vanishes over the first stretch of scroll.
+          // At rest (progress 0) hand control back to the mount fade-in class.
+          if (self.progress > 0) {
+            const io = Math.max(0, 1 - self.progress / 0.14);
+            introRef.current.style.opacity = String(io);
+            introRef.current.style.pointerEvents = io < 0.5 ? "none" : "auto";
+          } else {
+            introRef.current.style.opacity = "";
+            introRef.current.style.pointerEvents = "";
+          }
         }
       },
     });
@@ -147,6 +176,7 @@ function CinematicHero({ services }: { services: Service[] }) {
 
     return () => {
       cancelled = true;
+      cancelAnimationFrame(introTimer);
       trigger.kill();
       window.removeEventListener("resize", onResize);
     };
@@ -164,9 +194,19 @@ function CinematicHero({ services }: { services: Service[] }) {
             </div>
           ) : null}
 
+          {/* Immediate booking prompt — fades in on load, fades out on scroll. */}
+          <div
+            ref={introRef}
+            className={`absolute inset-0 flex items-center justify-center bg-gradient-to-b from-[var(--bds-paper-deep)]/70 via-[var(--bds-paper-deep)]/30 to-[var(--bds-paper-deep)]/70 transition-opacity duration-slow ease-bds ${
+              introShown ? "opacity-100" : "opacity-0"
+            }`}
+          >
+            <HeroIntro />
+          </div>
+
           <div
             ref={overlayRef}
-            style={{ opacity: 0 }}
+            style={{ opacity: 0, pointerEvents: "none" }}
             className="absolute inset-0 flex flex-col justify-end gap-6 bg-gradient-to-t from-[var(--bds-paper-deep)]/90 via-[var(--bds-paper-deep)]/25 to-transparent px-4 pb-16 pt-32 sm:px-6 sm:pb-24"
           >
             <HeroContent services={services} />

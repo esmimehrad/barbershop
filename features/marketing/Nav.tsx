@@ -1,9 +1,10 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { MobileMenuToggle } from "@/features/marketing/MobileMenuToggle";
+import { NavLinks, type NavLink } from "@/features/marketing/NavLinks";
 import { ScissorsMark } from "@/components/ui/scissors-mark";
 
-const LINKS = [
+const LINKS: NavLink[] = [
   { href: "#services", label: "Services" },
   { href: "#about", label: "About" },
   { href: "#team", label: "Team" },
@@ -21,17 +22,7 @@ export function Nav() {
           <span className="font-display text-xl tracking-wide text-foreground">Fadehouse</span>
         </Link>
 
-        <nav className="hidden items-center gap-1 text-sm font-medium md:flex">
-          {LINKS.map((link) => (
-            <a
-              key={link.href}
-              href={link.href}
-              className="rounded-[var(--bds-radius-pill)] px-3 py-1.5 text-foreground/80 transition-colors hover:bg-primary hover:text-primary-foreground"
-            >
-              {link.label}
-            </a>
-          ))}
-        </nav>
+        <NavLinks links={LINKS} />
 
         <div className="hidden md:block">
           <Link href="/book?track=haircut">

@@ -4,9 +4,9 @@ import { ScrollReveal } from "@/components/ui/scroll-reveal";
 
 export function Contact() {
   return (
-    <section id="contact" className="mx-auto w-full max-w-6xl px-4 py-16 sm:px-6 sm:py-24">
+    <section id="contact" className="mx-auto w-full max-w-6xl px-4 py-12 sm:px-6 sm:py-24">
       <ScrollReveal>
-        <h2 className="font-display text-3xl text-foreground sm:text-4xl">Find us</h2>
+        <h2 className="font-display text-2xl text-foreground sm:text-4xl">Find us</h2>
       </ScrollReveal>
 
       <div className="mt-10 grid grid-cols-1 gap-8 lg:grid-cols-2 lg:gap-16">

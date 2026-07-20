@@ -29,9 +29,9 @@ const FAQS = [
 /** Native <details name="faq"> — one-open-at-a-time accordion behavior, zero client JS. */
 export function FAQAccordion() {
   return (
-    <section id="faq" className="mx-auto w-full max-w-3xl px-4 py-16 sm:px-6 sm:py-24">
+    <section id="faq" className="mx-auto w-full max-w-3xl px-4 py-12 sm:px-6 sm:py-24">
       <ScrollReveal>
-        <h2 className="font-display text-3xl text-foreground sm:text-4xl">
+        <h2 className="font-display text-2xl text-foreground sm:text-4xl">
           Frequently asked questions
         </h2>
       </ScrollReveal>

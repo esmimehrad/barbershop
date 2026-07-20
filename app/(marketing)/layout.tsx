@@ -5,6 +5,7 @@ import { MobileBookBar } from "@/features/marketing/MobileBookBar";
 import { Footer } from "@/features/marketing/Footer";
 import { StructuredData } from "@/features/marketing/StructuredData";
 import { SmoothScrollProvider } from "@/features/marketing/SmoothScrollProvider";
+import { CustomCursor } from "@/features/marketing/CustomCursor";
 import { businessInfo } from "@/features/marketing/business-info";
 
 export const metadata: Metadata = {
@@ -35,6 +36,7 @@ export default function MarketingLayout({
   return (
     <SmoothScrollProvider>
       <StructuredData />
+      <CustomCursor />
       <Preloader />
       <Nav />
       <div className="flex-1">{children}</div>

@@ -65,6 +65,24 @@ export async function listActiveStaff(): Promise<Staff[]> {
 }
 
 /**
+ * Active barbers only (role = 'barber'), for the landing "Meet the team"
+ * section — the lash specialist is featured separately in the Eyelash
+ * section. Driven entirely by what's registered in the DB, so the section
+ * grows/shrinks with the roster automatically.
+ */
+export async function listActiveBarbers(): Promise<Staff[]> {
+  const supabase = await createClient();
+  const { data } = await supabase
+    .from("staff")
+    .select("*")
+    .eq("is_active", true)
+    .eq("role", "barber")
+    .order("landing_display_order", { ascending: true, nullsFirst: false })
+    .order("name", { ascending: true });
+  return data ?? [];
+}
+
+/**
  * Active staff with contact info joined in — for staff-facing surfaces (owner
  * roster, barber detail) that show a `tel:` link. RLS returns email/phone only
  * to owner/manager or the staff member themselves; others get nulls.
