@@ -2,6 +2,35 @@ import { ChevronDown } from "lucide-react";
 import { ScrollReveal } from "@/components/ui/scroll-reveal";
 
 /**
+ * Smooth expand + fade when a question opens, via the modern `::details-content`
+ * pseudo + `interpolate-size` (to animate to height:auto). Delivered as an inline
+ * <style> because Tailwind v4's Lightning CSS strips these newer features from
+ * globals.css at build. Progressive enhancement: browsers without `interpolate-size`
+ * (Safari/Firefox today) just open instantly; skipped under reduced-motion.
+ * Durations/easing use the shared --bds-* tokens.
+ */
+const FAQ_ANIMATION_CSS = `
+@supports (interpolate-size: allow-keywords) {
+  @media (prefers-reduced-motion: no-preference) {
+    .faq-item { interpolate-size: allow-keywords; }
+    .faq-item::details-content {
+      block-size: 0;
+      opacity: 0;
+      overflow: clip;
+      transition:
+        block-size var(--bds-dur-base) var(--bds-ease),
+        opacity var(--bds-dur-base) var(--bds-ease),
+        content-visibility var(--bds-dur-base) var(--bds-ease);
+      transition-behavior: allow-discrete;
+    }
+    .faq-item[open]::details-content {
+      block-size: auto;
+      opacity: 1;
+    }
+  }
+}`;
+
+/**
  * TODO(shop): provisional copy — confirm real cancellation window, walk-in
  * policy, payment methods, and parking details before launch.
  */
@@ -30,6 +59,7 @@ const FAQS = [
 export function FAQAccordion() {
   return (
     <section id="faq" className="mx-auto w-full max-w-3xl px-4 py-12 sm:px-6 sm:py-24">
+      <style dangerouslySetInnerHTML={{ __html: FAQ_ANIMATION_CSS }} />
       <ScrollReveal>
         <h2 className="font-display text-2xl text-foreground sm:text-4xl">
           Frequently asked questions
@@ -38,7 +68,7 @@ export function FAQAccordion() {
 
       <div className="mt-8 flex flex-col divide-y divide-border rounded-[var(--radius)] border border-border bg-card">
         {FAQS.map((faq) => (
-          <details key={faq.question} name="faq" className="group">
+          <details key={faq.question} name="faq" className="faq-item group">
             <summary className="flex cursor-pointer list-none items-center justify-between gap-4 rounded-[var(--radius)] p-5 text-base font-medium text-card-foreground transition-colors marker:content-none hover:bg-primary/15">
               {faq.question}
               <ChevronDown

@@ -16,6 +16,7 @@ export function About() {
             src="/images/about.jpg"
             alt="Inside the Fadehouse barbershop"
             placeholderVariant="wide"
+            sizes="(min-width: 1024px) 544px, 100vw"
             className="aspect-[4/5] w-full rounded-[var(--radius)] shadow-md sm:aspect-[3/4]"
           />
         </ScrollReveal>
