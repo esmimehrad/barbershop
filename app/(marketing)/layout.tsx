@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Preloader } from "@/features/marketing/Preloader";
 import { Nav } from "@/features/marketing/Nav";
-import { MobileBookBar } from "@/features/marketing/MobileBookBar";
+import { BottomTabBar } from "@/components/ui/bottom-tab-bar";
 import { Footer } from "@/features/marketing/Footer";
 import { StructuredData } from "@/features/marketing/StructuredData";
 import { SmoothScrollProvider } from "@/features/marketing/SmoothScrollProvider";
@@ -40,8 +40,10 @@ export default function MarketingLayout({
       <Preloader />
       <Nav />
       <div className="flex-1">{children}</div>
-      <MobileBookBar />
       <Footer />
+      {/* Spacer so the Footer clears the fixed BottomTabBar (mobile only). */}
+      <div aria-hidden className="h-[calc(env(safe-area-inset-bottom)+4rem)] md:hidden" />
+      <BottomTabBar />
     </SmoothScrollProvider>
   );
 }

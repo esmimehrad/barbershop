@@ -9,7 +9,8 @@ const INTERACTIVE = 'a, button, summary, label, input, [role="button"], [data-cu
  * Luxury custom cursor for the marketing surface: a precise gold dot that
  * tracks the pointer exactly, plus a larger ring that trails it with a smooth
  * lag and swells over interactive elements. Desktop only — it never mounts on
- * touch/coarse-pointer devices — and it drops the trailing lag under
+ * touch/coarse-pointer devices or below the mobile breakpoint (768px), so the
+ * mobile view keeps the native cursor — and it drops the trailing lag under
  * `prefers-reduced-motion`. Scoped to the marketing layout, so the native
  * cursor returns on the booking/dashboard surfaces.
  */
@@ -22,8 +23,10 @@ export function CustomCursor() {
   const [pressed, setPressed] = useState(false);
 
   useEffect(() => {
-    // Fine-pointer (mouse) devices only — no custom cursor on touchscreens.
+    // Fine-pointer (mouse) devices only, and desktop widths only — no custom
+    // cursor on touchscreens or in the mobile view; the native cursor stays.
     if (!window.matchMedia("(pointer: fine)").matches) return;
+    if (!window.matchMedia("(min-width: 768px)").matches) return;
 
     // One-time read of browser-only capabilities on mount — unknowable during SSR render.
     /* eslint-disable react-hooks/set-state-in-effect */
