@@ -33,7 +33,7 @@ export async function AppHeader() {
               </Button>
             </form>
           ) : (
-            <Link href="/auth/dev" className="rounded-[var(--radius)] px-2 py-1 hover:bg-muted">
+            <Link href="/auth" className="rounded-[var(--radius)] px-2 py-1 hover:bg-muted">
               Sign in
             </Link>
           )}

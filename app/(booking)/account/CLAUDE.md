@@ -3,7 +3,7 @@
 `/account`: credit balance, referral code, appointment history, rebook.
 
 ## Rules
-- Requires a client session (`getSessionContext().clientId`), else redirect to `/auth/dev`.
+- Requires a client session (`getSessionContext().clientId`), else redirect to `/auth?returnTo=/account`.
 - Reads via `lib/data/` (clients, appointments); RLS returns only the signed-in client's rows.
 - Rebook links back into `/book`.
 

@@ -1,6 +1,6 @@
 # app/(dashboard)/ — staff / owner surface
 
-Touch-first dashboard. `layout.tsx` redirects non-staff to `/auth/dev`.
+Touch-first dashboard. `layout.tsx` redirects non-staff to `/auth?returnTo=/dashboard`.
 
 ## Rules
 - Access-level gating with `canSee()` (owner/manager/staff) — hide pricing/metrics/credit from base staff. This is belt-and-suspenders on top of RLS; never rely on client-only hiding.

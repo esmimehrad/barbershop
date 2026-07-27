@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { SendTestEmailButton } from "./SendTestEmailButton";
 import { SendTestSmsButton } from "./SendTestSmsButton";
 import { SendTestWhatsAppButton } from "./SendTestWhatsAppButton";
+import { notFound } from "next/navigation";
 
 type DevUser = {
   email: string;
@@ -23,6 +24,8 @@ export default async function DevSignInPage({
 }: {
   searchParams: Promise<{ error?: string; returnTo?: string }>;
 }) {
+  if (process.env.NODE_ENV === "production") notFound();
+
   const { error, returnTo } = await searchParams;
   const customerRedirect = sanitizeReturnTo(returnTo) ?? "/book";
 

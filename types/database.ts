@@ -952,12 +952,17 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      create_client_profile: {
+        Args: { p_name: string }
+        Returns: string
+      }
       current_client_id: { Args: never; Returns: string }
       current_staff_access_level: {
         Args: never
         Returns: Database["public"]["Enums"]["access_level"]
       }
       current_staff_id: { Args: never; Returns: string }
+      resolve_phone_identity: { Args: never; Returns: string }
     }
     Enums: {
       access_level: "owner" | "manager" | "staff"

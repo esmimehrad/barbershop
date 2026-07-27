@@ -31,7 +31,7 @@ export async function ServiceStep({ params }: { params: BookingParams }) {
     <div className="flex flex-col gap-4">
       {session.kind !== "client" ? (
         <p className="rounded-[var(--radius)] border border-border p-3 text-xs text-muted-foreground">
-          You can browse freely. <Link className="underline" href="/auth/dev">Sign in</Link> as a customer to confirm a booking.
+          You can browse freely. <Link className="underline" href="/auth">Sign in</Link> as a customer to confirm a booking.
         </p>
       ) : null}
       <div className="flex gap-2 text-sm">
@@ -255,7 +255,7 @@ export async function ReviewStep({ params, sp }: { params: BookingParams; sp: Ra
           <Button type="submit">Confirm booking</Button>
         </form>
       ) : (
-        <Link href={`/auth/dev?returnTo=${encodeURIComponent(returnTo)}`}>
+        <Link href={`/auth?returnTo=${encodeURIComponent(returnTo)}`}>
           <Button className="w-full">Sign in to confirm</Button>
         </Link>
       )}

@@ -11,7 +11,7 @@ import { Badge } from "@/components/ui/badge";
 
 export default async function AccountPage() {
   const session = await getSessionContext();
-  if (!session.clientId) redirect("/auth/dev");
+  if (!session.clientId) redirect("/auth?returnTo=%2Faccount");
 
   const [client, appts] = await Promise.all([
     getClientProfile(session.clientId),

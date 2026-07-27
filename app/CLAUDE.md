@@ -6,7 +6,7 @@ Routes for the three surfaces, split by route group (groups don't add URL segmen
 - `(marketing)/` → `/` — public landing, static/ISR.
 - `(booking)/` → `/book`, `/account` — customer surface, dynamic.
 - `(dashboard)/` → `/dashboard`, `/dashboard/settings` — staff surface, access-gated.
-- `auth/` → `/auth/dev` — sign-in (dev stub now, phone OTP later).
+- `auth/` → `/auth`, `/auth/verify`, `/auth/complete-profile` — phone OTP sign-in and customer onboarding.
 
 ## Rules
 - **Server Components by default.** Add `'use client'` only for real interactivity.

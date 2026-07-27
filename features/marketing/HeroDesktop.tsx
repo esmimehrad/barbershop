@@ -7,7 +7,6 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import type { Service } from "@/lib/data/services";
 import { RazorSpinner } from "@/components/ui/razor-spinner";
 import { HeroContent } from "@/features/marketing/HeroContent";
-import { HeroIntro } from "@/features/marketing/HeroIntro";
 
 const FRAME_COUNT = 120;
 const framePath = (n: number) => `/hero-sequence/frame-${String(n).padStart(4, "0")}.webp`;
@@ -15,11 +14,11 @@ const framePath = (n: number) => `/hero-sequence/frame-${String(n).padStart(4, "
 const SEQUENCE_HEIGHT_VH = 180;
 
 /**
- * Desktop landing hero (≥ 768px) — the original cinematic scroll-scrubbed frame
- * sequence. First-paints as `StaticHero` (real headline/CTA/image for SEO, no-JS,
- * and hydration), then, if motion is allowed, upgrades to the canvas sequence.
- * Self-contained: editing this file cannot affect the mobile hero. Only the
- * headline/CTA overlay (`HeroContent`) is shared.
+ * Desktop landing hero (≥ 768px) — the cinematic scroll-scrubbed frame sequence,
+ * with the headline + booking CTA (`HeroContent`) shown from the very start and
+ * kept stable while the movie plays behind it, so people can read the value prop
+ * and book right away. First-paints as `StaticHero`; upgrades to the sequence
+ * once motion is allowed. Self-contained; only `HeroContent` is shared.
  */
 export function HeroDesktop({ services }: { services: Service[] }) {
   const [enhanced, setEnhanced] = useState(false);
@@ -62,15 +61,14 @@ export function StaticHero({ services }: { services: Service[] }) {
  * Cinematic scroll-scrubbed frame sequence. Pinning uses plain CSS
  * `position: sticky`, not GSAP's pin plugin — vertical scroll only, always.
  * GSAP ScrollTrigger only measures progress and drives which frame is drawn.
+ * The headline/CTA overlay is shown from the start and never moves.
  */
 function CinematicHero({ services }: { services: Service[] }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const overlayRef = useRef<HTMLDivElement>(null);
-  const introRef = useRef<HTMLDivElement>(null);
+  const stickyRef = useRef<HTMLDivElement>(null);
   const currentFrameRef = useRef(-1);
   const [ready, setReady] = useState(false);
-  const [introShown, setIntroShown] = useState(false);
 
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger);
@@ -80,9 +78,6 @@ function CinematicHero({ services }: { services: Service[] }) {
     if (containerRef.current) {
       containerRef.current.style.height = `${SEQUENCE_HEIGHT_VH}vh`;
     }
-
-    // Fade the intro booking prompt in on the next frame (not on scroll).
-    const introTimer = requestAnimationFrame(() => setIntroShown(true));
 
     function drawFrame(index: number) {
       const canvas = canvasRef.current;
@@ -140,27 +135,9 @@ function CinematicHero({ services }: { services: Service[] }) {
           currentFrameRef.current = index;
           drawFrame(index);
         }
-        if (overlayRef.current) {
-          // Overlay text reveals only in the sequence's final stretch, once the
-          // frame lands on the "finished client, negative space" hero portrait.
-          const p = Math.min(1, Math.max(0, (self.progress - 0.82) / 0.18));
-          overlayRef.current.style.opacity = String(p);
-          overlayRef.current.style.transform = `translateY(${(1 - p) * 20}px)`;
-          // Only capture clicks once actually revealed — otherwise this opacity:0
-          // layer sits on top of the intro and swallows its button taps.
-          overlayRef.current.style.pointerEvents = p > 0.5 ? "auto" : "none";
-        }
-        if (introRef.current) {
-          // Intro booking prompt vanishes over the first stretch of scroll.
-          // At rest (progress 0) hand control back to the mount fade-in class.
-          if (self.progress > 0) {
-            const io = Math.max(0, 1 - self.progress / 0.14);
-            introRef.current.style.opacity = String(io);
-            introRef.current.style.pointerEvents = io < 0.5 ? "none" : "auto";
-          } else {
-            introRef.current.style.opacity = "";
-            introRef.current.style.pointerEvents = "";
-          }
+        if (stickyRef.current) {
+          // After the first scroll the hero eases to 70% opacity, then holds.
+          stickyRef.current.style.opacity = String(Math.max(0.7, 1 - self.progress));
         }
       },
     });
@@ -170,7 +147,6 @@ function CinematicHero({ services }: { services: Service[] }) {
 
     return () => {
       cancelled = true;
-      cancelAnimationFrame(introTimer);
       trigger.kill();
       window.removeEventListener("resize", onResize);
     };
@@ -179,7 +155,10 @@ function CinematicHero({ services }: { services: Service[] }) {
   return (
     <section id="hero" aria-label="Fadehouse — cinematic introduction">
       <div ref={containerRef} style={{ height: `${SEQUENCE_HEIGHT_VH}vh` }} className="relative">
-        <div className="sticky top-0 h-dvh w-full overflow-hidden bg-[var(--bds-paper-deep)]">
+        <div
+          ref={stickyRef}
+          className="sticky top-0 h-dvh w-full overflow-hidden bg-[var(--bds-paper-deep)]"
+        >
           <canvas ref={canvasRef} className="absolute inset-0 h-full w-full" aria-hidden="true" />
 
           {!ready ? (
@@ -188,21 +167,9 @@ function CinematicHero({ services }: { services: Service[] }) {
             </div>
           ) : null}
 
-          {/* Immediate booking prompt — fades in on load, fades out on scroll. */}
-          <div
-            ref={introRef}
-            className={`absolute inset-0 flex items-center justify-center bg-gradient-to-b from-[var(--bds-paper-deep)]/70 via-[var(--bds-paper-deep)]/30 to-[var(--bds-paper-deep)]/70 transition-opacity duration-slow ease-bds ${
-              introShown ? "opacity-100" : "opacity-0"
-            }`}
-          >
-            <HeroIntro />
-          </div>
-
-          <div
-            ref={overlayRef}
-            style={{ opacity: 0, pointerEvents: "none" }}
-            className="absolute inset-0 flex flex-col justify-end gap-6 bg-gradient-to-t from-[var(--bds-paper-deep)]/90 via-[var(--bds-paper-deep)]/25 to-transparent px-4 pb-16 pt-32 sm:px-6 sm:pb-24"
-          >
+          {/* Headline + booking CTA — visible from the start and stable while the
+              movie scrubs behind, so people can read it and book right away. */}
+          <div className="absolute inset-0 flex flex-col justify-end gap-6 bg-gradient-to-t from-[var(--bds-paper-deep)]/90 via-[var(--bds-paper-deep)]/25 to-transparent px-4 pb-16 pt-32 sm:px-6 sm:pb-24">
             <HeroContent services={services} />
           </div>
         </div>
