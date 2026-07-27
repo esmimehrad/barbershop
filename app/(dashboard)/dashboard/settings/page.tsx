@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { canSee, getSessionContext } from "@/lib/auth";
 import {
+  getBookingAlertPhone,
   getStaffServiceMatrix,
   listAllServices,
   listAllStaff,
@@ -10,12 +11,19 @@ import {
   listPromotions,
 } from "@/lib/data/admin";
 import { AccessLevelsTab } from "@/features/admin-config/access-levels-tab";
+import { NotificationsTab } from "@/features/admin-config/notifications-tab";
 import { StaffServicesTab } from "@/features/admin-config/staff-services-tab";
 import { ScheduleTab } from "@/features/admin-config/schedule-tab";
 import { ServicesTab } from "@/features/admin-config/services-tab";
 import { PromotionsTab } from "@/features/admin-config/promotions-tab";
 
-type TabKey = "access" | "staff" | "schedule" | "services" | "promotions";
+type TabKey =
+  | "access"
+  | "staff"
+  | "schedule"
+  | "services"
+  | "promotions"
+  | "notifications";
 
 const TABS: { key: TabKey; label: string; ownerOnly?: boolean }[] = [
   { key: "access", label: "Access levels", ownerOnly: true },
@@ -23,6 +31,7 @@ const TABS: { key: TabKey; label: string; ownerOnly?: boolean }[] = [
   { key: "schedule", label: "Schedule & holidays" },
   { key: "services", label: "Services & pricing" },
   { key: "promotions", label: "Promotions" },
+  { key: "notifications", label: "Notifications", ownerOnly: true },
 ];
 
 export default async function SettingsPage({
@@ -206,6 +215,10 @@ async function TabContent({
         listAllServices(),
       ]);
       return <PromotionsTab promotions={promotions} services={services} />;
+    }
+    case "notifications": {
+      const bookingAlertPhone = await getBookingAlertPhone();
+      return <NotificationsTab bookingAlertPhone={bookingAlertPhone} />;
     }
   }
 }

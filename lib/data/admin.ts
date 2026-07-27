@@ -25,6 +25,16 @@ export async function listAllStaff(): Promise<Staff[]> {
   return data ?? [];
 }
 
+/** The owner-configured phone that receives new-booking SMS alerts (or null). */
+export async function getBookingAlertPhone(): Promise<string | null> {
+  const supabase = await createClient();
+  const { data } = await supabase
+    .from("shop_settings")
+    .select("booking_alert_phone")
+    .maybeSingle();
+  return data?.booking_alert_phone ?? null;
+}
+
 /**
  * All staff (incl. inactive) with contact info joined — for admin surfaces that
  * search or display email/phone. RLS on staff_contact still scopes the contact

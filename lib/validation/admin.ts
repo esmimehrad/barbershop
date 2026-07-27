@@ -16,6 +16,17 @@ export const accessLevelInput = z.object({
   level: accessLevel,
 });
 
+/** Owner-set number that receives a new-booking alert. Empty clears it. */
+export const bookingAlertPhoneInput = z.object({
+  phone: z
+    .string()
+    .trim()
+    .transform((v) => v.replace(/[\s()-]/g, ""))
+    .refine((v) => v === "" || /^\+[1-9]\d{7,14}$/.test(v), {
+      message: "Use international format, e.g. +14165550123.",
+    }),
+});
+
 export const serviceStaffInput = z.object({
   serviceId: uuid,
   staffIds: z.array(uuid),

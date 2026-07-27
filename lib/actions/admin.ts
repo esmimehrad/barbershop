@@ -7,6 +7,7 @@ import {
   accessLevelInput,
   availabilityInput,
   availabilityUpdateInput,
+  bookingAlertPhoneInput,
   holidayInput,
   idInput,
   promotionInput,
@@ -37,6 +38,31 @@ const str = (fd: FormData, key: string) => {
   const v = fd.get(key);
   return typeof v === "string" && v.trim() !== "" ? v.trim() : undefined;
 };
+
+/* ── Notifications (owner-only) ─────────────────────────────────────────── */
+/** Set (or clear, when blank) the phone that receives new-booking alerts. */
+export async function setBookingAlertPhone(fd: FormData): Promise<ActionResult> {
+  const denied = await authorize("access_admin");
+  if (denied) return denied;
+
+  const parsed = bookingAlertPhoneInput.safeParse({ phone: fd.get("phone") ?? "" });
+  if (!parsed.success) {
+    return {
+      ok: false,
+      error: parsed.error.flatten().fieldErrors.phone?.[0] ?? "Invalid number.",
+    };
+  }
+
+  const supabase = await createClient();
+  const { error } = await supabase
+    .from("shop_settings")
+    .update({
+      booking_alert_phone: parsed.data.phone === "" ? null : parsed.data.phone,
+      updated_at: new Date().toISOString(),
+    })
+    .eq("id", true);
+  return error ? { ok: false, error: error.message } : done();
+}
 
 /* ── Access levels (owner-only) ─────────────────────────────────────────── */
 export async function setAccessLevel(fd: FormData): Promise<ActionResult> {

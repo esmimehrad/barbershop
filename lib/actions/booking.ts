@@ -126,12 +126,14 @@ export async function bookAppointment(formData: FormData) {
     /* email is non-critical; the booking already succeeded */
   }
 
+  const { data: client } = await supabase
+    .from("client")
+    .select("phone, name")
+    .eq("id", clientId)
+    .maybeSingle();
+
+  // Confirmation to the customer's own phone.
   try {
-    const { data: client } = await supabase
-      .from("client")
-      .select("phone")
-      .eq("id", clientId)
-      .maybeSingle();
     if (client?.phone) {
       await sendSms({
         to: client.phone,
@@ -140,6 +142,19 @@ export async function bookAppointment(formData: FormData) {
     }
   } catch {
     /* SMS is non-critical; the booking already succeeded */
+  }
+
+  // Alert the owner-configured number that a new appointment came in.
+  try {
+    const { data: alertPhone } = await supabase.rpc("get_booking_alert_phone");
+    if (alertPhone) {
+      await sendSms({
+        to: alertPhone,
+        body: `New booking: ${service.name} for ${client?.name ?? "a customer"} on ${when}.`,
+      });
+    }
+  } catch {
+    /* alert is non-critical; the booking already succeeded */
   }
 
   revalidatePath("/dashboard");

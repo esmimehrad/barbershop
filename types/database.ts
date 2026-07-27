@@ -705,6 +705,24 @@ export type Database = {
         }
         Relationships: []
       }
+      shop_settings: {
+        Row: {
+          booking_alert_phone: string | null
+          id: boolean
+          updated_at: string
+        }
+        Insert: {
+          booking_alert_phone?: string | null
+          id?: boolean
+          updated_at?: string
+        }
+        Update: {
+          booking_alert_phone?: string | null
+          id?: boolean
+          updated_at?: string
+        }
+        Relationships: []
+      }
       staff: {
         Row: {
           access_level: Database["public"]["Enums"]["access_level"]
@@ -962,6 +980,7 @@ export type Database = {
         Returns: Database["public"]["Enums"]["access_level"]
       }
       current_staff_id: { Args: never; Returns: string }
+      get_booking_alert_phone: { Args: never; Returns: string }
       resolve_phone_identity: { Args: never; Returns: string }
     }
     Enums: {
